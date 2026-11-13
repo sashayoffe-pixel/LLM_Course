@@ -222,7 +222,39 @@
   let navBack = false;          // our own "back" button triggered this navigation
   const appHistory = [];        // ids of pages visited in this tab (for the back button)
   let liveDiagrams = [];        // diagrams mounted on the current page
-  const reduceMotion = () => !!(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches);
+  /* zoom effects are ON by default (even if the OS asks for reduced motion); the learner can switch them off in the sidebar */
+  const MOTION_KEY = 'llm-academy-motion';
+  const motionOn = () => { try { const v = localStorage.getItem(MOTION_KEY); return v === null ? true : v === '1'; } catch (e) { return true; } };
+  const reduceMotion = () => !motionOn();
+  /* remember what was clicked last, so the page transition can zoom out of it */
+  let lastClick = null;
+  document.addEventListener('click', e => {
+    const el = e.target.closest && e.target.closest('a, button, .dg-node, .home-card');
+    if (el) lastClick = { r: el.getBoundingClientRect(), t: performance.now() };
+  }, true);
+  /* full-screen "portal": the clicked element grows to fill the screen (zoom in), or the screen shrinks away (zoom out) */
+  function portal(mod, dir) {
+    if (reduceMotion() || !document.body.animate) return 0;
+    const vw = innerWidth, vh = innerHeight;
+    let r = lastClick && performance.now() - lastClick.t < 3000 ? lastClick.r : null;
+    if (!r || r.width < 8) r = { left: vw / 2 - 90, top: vh / 2 - 60, width: 180, height: 120 };
+    const ov = h('div', { class: 'zoom-portal ' + dir }, h('div', { class: 'zp-in' }, h('div', { class: 'zp-ic' }, mod.icon || '📘'), h('div', { class: 'zp-t' }, mod.title)));
+    document.body.appendChild(ov);
+    const small = { left: r.left + 'px', top: r.top + 'px', width: r.width + 'px', height: r.height + 'px', borderRadius: '18px', opacity: 1 };
+    const full = { left: '0px', top: '0px', width: vw + 'px', height: vh + 'px', borderRadius: '0px', opacity: 1 };
+    const inner = ov.firstChild;
+    if (dir === 'in') {
+      ov.animate([small, full], { duration: 620, easing: 'cubic-bezier(.65,0,.25,1)', fill: 'forwards' });
+      inner.animate([{ transform: 'scale(.25)', opacity: .2 }, { transform: 'scale(1)', opacity: 1 }], { duration: 620, easing: 'cubic-bezier(.65,0,.25,1)', fill: 'forwards' });
+      setTimeout(() => { const a = ov.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 380, fill: 'forwards' }); a.onfinish = () => ov.remove(); }, 720);
+      return 700;
+    }
+    const center = { left: vw / 2 - 90 + 'px', top: vh / 2 - 60 + 'px', width: '180px', height: '120px', borderRadius: '18px', opacity: 0 };
+    const a = ov.animate([full, center], { duration: 560, easing: 'cubic-bezier(.65,0,.25,1)', fill: 'forwards' });
+    inner.animate([{ transform: 'scale(1)' }, { transform: 'scale(.3)' }], { duration: 560, easing: 'cubic-bezier(.65,0,.25,1)', fill: 'forwards' });
+    a.onfinish = () => ov.remove();
+    return 0;
+  }
   const easeInOut = k => k < .5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2;
   function animateViewBox(svgEl, from, to, ms) {
     return new Promise(res => {
@@ -389,7 +421,7 @@
     async function zoomInto(n, fill) {
       const o = nodeEls[n.id]; if (!svg) return;
       svg.classList.add('dg-zooming'); if (o) o.g.classList.add('dg-focus');
-      await animateViewBox(svg, fullBox(), nodeBox(n, fill), 700);
+      await animateViewBox(svg, fullBox(), nodeBox(n, fill), 850);
     }
     async function dive(n, instant) {
       if (busy || !n.children) return;
@@ -575,13 +607,17 @@
       try { mod.render(main); } catch (e) { console.error(e); main.appendChild(h('div', { class: 'callout warn' }, 'שגיאה בטעינת המודול: ' + e.message)); }
       mark(mod.id, 'visited', true);
     }
-    main.classList.remove('page-enter', 'page-zoom-enter', 'page-zoom-out'); void main.offsetWidth;
+    main.classList.remove('page-enter', 'page-zoom-enter', 'page-zoom-out', 'after-portal'); void main.offsetWidth;
     const upFrom = pendingUp; pendingUp = null;
     const target = upFrom && liveDiagrams.find(d => d.hasLink(upFrom));
     /* forward to a new topic = zoom in; backward / up = zoom out */
     const L = ordered(), ix = x => L.findIndex(m => m.id === x);
     const dir = !prevId || prevId === mod.id ? 'fade' : (target || upFrom || wasBack || ix(mod.id) < ix(prevId)) ? 'out' : 'in';
-    if (!reduceMotion()) main.classList.add(dir === 'out' ? 'page-zoom-out' : dir === 'in' || pendingZoom ? 'page-zoom-enter' : 'page-enter');
+    if (!reduceMotion()) {
+      if (dir === 'in' || (pendingZoom && dir !== 'out')) { portal(mod, 'in'); main.classList.add('page-zoom-enter', 'after-portal'); }
+      else if (dir === 'out') { portal(LA_prev(prevId) || mod, 'out'); main.classList.add('page-zoom-out'); }
+      else main.classList.add('page-enter');
+    }
     pendingZoom = false;
     if (target) requestAnimationFrame(() => target.revealLink(upFrom));
     renderNav();
@@ -597,7 +633,14 @@
     const hits = []; while (walker.nextNode()) hits.push(walker.currentNode);
     hits.forEach(n => { n.nodeValue = n.nodeValue.replace(RANGE_RE, '\u2066$1\u2069'); });
   }
+  function LA_prev(id) { return modules.find(m => m.id === id); }
   function start() {
+    const mt = document.getElementById('motionToggle');
+    if (mt) {
+      const paint = () => { mt.textContent = motionOn() ? '🎬 אפקטי זום: פועלים' : '🎬 אפקטי זום: כבויים'; mt.classList.toggle('off', !motionOn()); };
+      mt.addEventListener('click', () => { try { localStorage.setItem(MOTION_KEY, motionOn() ? '0' : '1'); } catch (e) { /* ignore */ } paint(); });
+      paint();
+    }
     const mainEl = document.getElementById('main');
     if (window.MutationObserver && mainEl) {
       let pending = false;
