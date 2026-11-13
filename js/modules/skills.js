@@ -322,7 +322,7 @@ allowed-tools: Read, Grep
 
   /* ===================== MODULE ===================== */
   LA.register({
-    id: 'skills', order: 70, group: 'build', icon: '🧰', short: 'Skills',
+    id: 'skills', order: 55, group: 'build', icon: '🧰', short: 'Skills',
     title: 'Skills — יכולות ארוזות לסוכנים',
     render(main) {
       LA.page(main, {

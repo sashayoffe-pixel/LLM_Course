@@ -70,11 +70,12 @@ Mounting widgets (take a container element):
 * `LA.stepper(el, {intro?, steps:[{title, html, run?(ctx, silent)}], ctx?, onReset?(ctx), autoplayMs?})` — step-through player.
   `run` is called when the step is entered; when jumping backwards it replays earlier `run`s with `silent=true` after `onReset`.
 * `LA.diagram(el, spec, opts?)` → api. spec:
-  `{ title?, width:900, height:420, intro?(html for side panel), nodes:[{id, x, y (CENTER), w=150, h=56, label, sub?, icon?, color?, shape?, info?(html), children?(nested spec)}], edges:[{from, to, label?, dashed?, color?, bend?(px curvature), both?}], groups:[{x, y (top-left), w, h, label, color}] }`
+  `{ title?, width:900, height:420, intro?(html for side panel), nodes:[{id, x, y (CENTER), w=150, h=56, label, sub?, icon?, color?, shape?, info?(html), children?(nested spec), link?(module id)}], edges:[{from, to, label?, dashed?, color?, bend?(px curvature), both?}], groups:[{x, y (top-left), w, h, label, color}] }`
   colors: `llm|data|tool|store|ctrl|ui|ext|warn|ok|neuron` or any hex. shapes: `rect(default)|round|circle|db|diamond`.
-  Click a node → its `info` in the side panel; nodes with `children` show ⤵ and a "dive in" button; breadcrumbs go back.
+  Click a node → its `info` in the side panel; nodes with `children` show ⤵ and a "dive in" button that ZOOMS INTO the node; breadcrumbs zoom back out.
+  Nodes with `link` (and no children): hover shows info, click zooms into the node and navigates to `#/<link>` with a zoom-in page transition.
   api: `select(id)`, `highlight([ids])`, `flow([id1,id2,...], msPerEdge?, color?)` (Promise, animates a glowing dot along edges),
-  `flowEdge(from,to,ms,color)`, `setSub(id, text)`, `dive(id)`, `depth`, `svg`, `el`; `opts.onRender(api, depth)`, `opts.onSelect(node, api)`, `opts.compact` (panel under the svg).
+  `flowEdge(from,to,ms,color)`, `setSub(id, text)`, `dive(id, animate?)` (instant unless animate), `back(level)`, `depth`, `svg`, `el`; `opts.onRender(api, depth)`, `opts.onSelect(node, api)`, `opts.compact` (panel under the svg).
   Layout tip: viewBox is `width × height`; keep labels short (≤ ~18 chars Hebrew at w=150; use `sub` for a second line);
   main flows go **right → left** (Hebrew reading order). Use `LA.s(tag, attrs, ...children)` to draw custom SVG.
 * DOM: `LA.h(tag, attrs, ...children)` (attrs: `class`, `style` obj, `html`, `text`, `onclick`...), `LA.s(...)` for SVG.
@@ -92,6 +93,6 @@ Mounting widgets (take a container element):
   });
 })();
 ```
-Groups/orders (fixed): home 0 `start` · llm 10 `core` · chat 20 `core` · rag 30 `build` · langchain 40 `build` ·
-langgraph 50 `build` · agents 60 `build` · skills 70 `build` · comfyui 80 `ops` · clearml 90 `ops` ·
-algorithmist 100 `pro` · capstone 110 `pro` · glossary 200 `ref` · exam 210 `ref`.
+Groups/orders (fixed — this is the learning path the "previous / next" bar follows): home 0 `start` · llm 10 `core` ·
+chat 20 `core` · rag 30 `build` · langchain 40 `build` · agents 50 `build` · skills 55 `build` · langgraph 60 `build` ·
+comfyui 80 `ops` · clearml 90 `ops` · algorithmist 100 `pro` · capstone 110 `pro` · exam 200 `ref` · glossary 210 `ref`.

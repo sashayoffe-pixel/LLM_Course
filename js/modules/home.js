@@ -8,52 +8,53 @@
     { id: 'chat', icon: '💬', t: "ממשק צ'אט", d: 'למה המודל "שוכח", איך היסטוריה, streaming ו-context window עובדים.' },
     { id: 'rag', icon: '📚', t: 'RAG', d: 'לחבר את המודל למסמכים שלכם: chunking, embeddings, חיפוש וקטורי, ציטוטים.' },
     { id: 'langchain', icon: '🔗', t: 'LangChain', d: 'לבני הלגו: prompt | model | parser, retrievers, tools.' },
-    { id: 'langgraph', icon: '🕸️', t: 'LangGraph', d: 'גרף מצבים: לולאות, הסתעפויות, checkpoint ואישור אנושי.' },
     { id: 'agents', icon: '🤖', t: 'סוכנים ותתי-סוכנים', d: 'LLM + כלים + לולאה. וגם: איזה מודל לכל תת-סוכן.' },
     { id: 'skills', icon: '🧰', t: 'Skills', d: 'יכולות ארוזות (SKILL.md) שנטענות רק כשצריך.' },
+    { id: 'langgraph', icon: '🕸️', t: 'LangGraph', d: 'גרף מצבים: לולאות, הסתעפויות, checkpoint ואישור אנושי.' },
     { id: 'comfyui', icon: '🎨', t: 'ComfyUI', d: 'גרף nodes ויזואלי למודלי דיפוזיה — והקשר לטרנספורמרים.' },
     { id: 'clearml', icon: '📈', t: 'ClearML', d: 'MLOps: מעקב ניסויים, נתונים, צינורות, תורים ופריסה.' },
     { id: 'algorithmist', icon: '🧪', t: 'עין של אלגוריתמאי', d: 'השוואה בין כל התחומים, הערכה, עלויות, אבטחה, צ׳קליסט.' },
     { id: 'capstone', icon: '🏗️', t: 'פרויקט מסכם', d: 'מערכת שירות לקוחות אחת שמחברת את כל הנושאים.' },
-    { id: 'exam', icon: '🎓', t: 'מבחן מסכם', d: '30 שאלות על כל החומר + סיכום חוזקות/חולשות.' }
+    { id: 'exam', icon: '🎓', t: 'מבחן מסכם', d: '30 שאלות על כל החומר + סיכום חוזקות/חולשות.' },
+    { id: 'glossary', icon: '📖', t: 'מילון מונחים', d: '188 מונחים עם חיפוש — נספח לעיון בכל שלב.' }
   ];
 
   const MAP = {
     width: 900, height: 540,
-    intro: `<div class="dg-hint">👆 לחצו על כל רכיב כדי להבין את תפקידו ביחס ל-LLM שבמרכז.<br>
-      בכל מודול תמצאו דיאגרמה כזו שאפשר <b class="dive-ic">⤵</b> לצלול לתוכה עד הרכיב הקטן ביותר.</div>`,
+    intro: `<div class="dg-hint">🖱️ <b>רחפו</b> מעל רכיב כדי לקרוא על תפקידו ביחס ל-LLM שבמרכז, ו<b>לחצו</b> עליו כדי לעשות <b>זום אין</b> ישר לעמוד המודול 🔍.<br>
+      בתוך כל מודול תמצאו דיאגרמות שאפשר <b class="dive-ic">⤵</b> לצלול לתוכן בזום, עד הרכיב הקטן ביותר — ו"לצאת" בזום אאוט דרך שורת הניווט שמעל הדיאגרמה.</div>`,
     groups: [
       { x: 655, y: 30, w: 230, h: 485, label: 'מול המשתמש ותזמור', color: 'ui' },
       { x: 15, y: 30, w: 230, h: 485, label: 'יכולות והרחבות', color: 'tool' }
     ],
     nodes: [
-      { id: 'llm', x: 450, y: 272, w: 150, h: 150, shape: 'circle', icon: '🧠', label: 'LLM', sub: 'המוח: מנבא טוקן הבא', color: 'llm',
+      { id: 'llm', link: 'llm', x: 450, y: 272, w: 150, h: 150, shape: 'circle', icon: '🧠', label: 'LLM', sub: 'המוח: מנבא טוקן הבא', color: 'llm',
         info: `<p>מודל שפה גדול הוא רשת נוירונים (Transformer) שאומנה לחזות את <b>הטוקן הבא</b>. כל שאר הרכיבים במפה קיימים כדי
         להזין אותו בהקשר הנכון, לתת לו ידיים (כלים), לנהל את הזרימה סביבו או למדוד אותו.</p>
         <p>בפנים: embeddings → עשרות שכבות של attention + MLP → הסתברות לכל טוקן במילון. בקורס נצלול עד <b>נוירון בודד</b>.</p>${go('llm')}` },
-      { id: 'chat', x: 770, y: 92, icon: '💬', label: "ממשק צ'אט", sub: 'Chat UI', color: 'ui',
+      { id: 'chat', link: 'chat', x: 770, y: 92, icon: '💬', label: "ממשק צ'אט", sub: 'Chat UI', color: 'ui',
         info: `<p>החלון שבו המשתמש מדבר עם המודל. הסוד: המודל <b>חסר זיכרון</b> — הממשק שולח בכל תור את כל ההיסטוריה
         (system + user + assistant), מזרים תשובה טוקן-אחר-טוקן ומנהל את גבולות ה-context window.</p>${go('chat')}` },
-      { id: 'langgraph', x: 770, y: 272, icon: '🕸️', label: 'LangGraph', sub: 'גרף מצבים / תזמור', color: 'ctrl',
+      { id: 'langgraph', link: 'langgraph', x: 770, y: 272, icon: '🕸️', label: 'LangGraph', sub: 'גרף מצבים / תזמור', color: 'ctrl',
         info: `<p>מנוע תזמור: מגדירים <b>State</b>, <b>nodes</b> (פונקציות/קריאות LLM) ו-<b>edges</b> (כולל תנאים ולולאות).
         מאפשר זיכרון מתמשך (checkpoints), עצירה לאישור אנושי ומערכות מרובות סוכנים.</p>${go('langgraph')}` },
-      { id: 'agents', x: 770, y: 452, icon: '🤖', label: 'סוכנים', sub: 'LLM + כלים + לולאה', color: 'tool',
+      { id: 'agents', link: 'agents', x: 770, y: 452, icon: '🤖', label: 'סוכנים', sub: 'LLM + כלים + לולאה', color: 'tool',
         info: `<p>סוכן = LLM שמחליט בעצמו <b>איזה כלי להפעיל ומתי לעצור</b>. תת-סוכנים מקבלים משימות ממוקדות —
         וכל אחד מהם מקבל מודל לפי מורכבות: ${LA.modelBadge('haiku')} לסיווג, ${LA.modelBadge('sonnet')} לעבודה שוטפת,
         ${LA.modelBadge('opus')} לתכנון.</p>${go('agents')}` },
-      { id: 'rag', x: 450, y: 78, icon: '📚', label: 'RAG', sub: 'אחזור מסמכים → הקשר', color: 'store',
+      { id: 'rag', link: 'rag', x: 450, y: 78, icon: '📚', label: 'RAG', sub: 'אחזור מסמכים → הקשר', color: 'store',
         info: `<p>Retrieval-Augmented Generation: לפני שהמודל עונה, מאחזרים את קטעי המסמכים הרלוונטיים (חיפוש וקטורי)
         ומדביקים אותם לפרומפט. כך המודל עונה על <b>המידע שלכם</b>, עדכני ועם ציטוטים.</p>${go('rag')}` },
-      { id: 'clearml', x: 450, y: 470, icon: '📈', label: 'ClearML', sub: 'MLOps: ניסויים ופריסה', color: 'data',
+      { id: 'clearml', link: 'clearml', x: 450, y: 470, icon: '📈', label: 'ClearML', sub: 'MLOps: ניסויים ופריסה', color: 'data',
         info: `<p>פלטפורמת MLOps: רושמת כל ניסוי (קוד, פרמטרים, מדדים), מנהלת גרסאות דאטה, מריצה צינורות על GPU דרך תורים
         ומגישה מודלים. סביב LLM: מעקב אחרי fine-tuning, ניסויי RAG ו-evals.</p>${go('clearml')}` },
-      { id: 'skills', x: 130, y: 92, icon: '🧰', label: 'Skills', sub: 'SKILL.md נטען לפי צורך', color: 'tool',
+      { id: 'skills', link: 'skills', x: 130, y: 92, icon: '🧰', label: 'Skills', sub: 'SKILL.md נטען לפי צורך', color: 'tool',
         info: `<p>חבילת ידע+כלים לסוכן: תיקייה עם SKILL.md (שם, תיאור, הוראות) וסקריפטים. המודל רואה רק את התיאור הקצר,
         וטוען את השאר רק כשהמשימה דורשת — חוסך context.</p>${go('skills')}` },
-      { id: 'langchain', x: 130, y: 272, icon: '🔗', label: 'LangChain', sub: 'רכיבים: prompt|llm|parser', color: 'ctrl',
+      { id: 'langchain', link: 'langchain', x: 130, y: 272, icon: '🔗', label: 'LangChain', sub: 'רכיבים: prompt|llm|parser', color: 'ctrl',
         info: `<p>ספריית רכיבים שעוטפת מודלים מכל הספקים בממשק אחיד: תבניות פרומפט, parsers, retrievers, tools,
         וחיבור ב-<code>|</code>. LangGraph בנוי מעליה לתזמור מורכב.</p>${go('langchain')}` },
-      { id: 'comfyui', x: 130, y: 452, icon: '🎨', label: 'ComfyUI', sub: 'גרף nodes לדיפוזיה', color: 'neuron',
+      { id: 'comfyui', link: 'comfyui', x: 130, y: 452, icon: '🎨', label: 'ComfyUI', sub: 'גרף nodes לדיפוזיה', color: 'neuron',
         info: `<p>ממשק nodes ויזואלי למודלי תמונה/וידאו. ה-text encoder שבו הוא טרנספורמר — אותה משפחה של LLM;
         ו-LLM יכול לכתוב לו פרומפטים או להפעיל אותו ככלי דרך API.</p>${go('comfyui')}` }
     ],
@@ -153,7 +154,7 @@
           },
           {
             id: 'path', title: 'מסלול הלימוד', render(el) {
-              el.insertAdjacentHTML('beforeend', '<p>מומלץ ללמוד לפי הסדר: קודם להבין מה קורה <b>בתוך</b> המודל, אחר כך איך מדברים איתו, איך מזינים לו ידע, ואיך בונים סביבו מערכות. סימון ✅ מופיע אחרי ציון 70%+ בבוחן.</p>');
+              el.insertAdjacentHTML('beforeend', '<p>הקורס בנוי כמסלול אחד מההתחלה עד הסוף — אפשר פשוט ללחוץ <b>"הבא ←"</b> בסרגל שבתחתית כל עמוד. הסדר: קודם מה קורה <b>בתוך</b> המודל → איך מדברים איתו → איך מזינים לו ידע (RAG) → רכיבי הבנייה (LangChain) → מה זה סוכן → איך אורזים לו יכולות (Skills) → איך מתזמרים סוכנים באמינות (LangGraph) → הרחבות (ComfyUI) ו-MLOps (ClearML) → הראייה של האלגוריתמאי → פרויקט מסכם → מבחן. סימון ✅ מופיע אחרי ציון 70%+ בבוחן.</p>');
               cards(el);
             }
           },

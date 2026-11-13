@@ -217,6 +217,20 @@
      spec = { width, height, title?, nodes:[{id,x,y,w,h,label,sub,color,shape,icon,info,children}], edges:[{from,to,label,dashed,color,bend,both}], groups:[{x,y,w,h,label,color}] }
      x,y = node CENTER. Clicking a node shows `info` in the side panel; if it has `children` (a nested spec) a "dive in" button zooms in. */
   let diagSeq = 0;
+  let pendingZoom = false;
+  const reduceMotion = () => !!(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches);
+  const easeInOut = k => k < .5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2;
+  function animateViewBox(svgEl, from, to, ms) {
+    return new Promise(res => {
+      if (reduceMotion() || !svgEl) { svgEl && svgEl.setAttribute('viewBox', to.join(' ')); return res(); }
+      const t0 = performance.now();
+      (function f(now) {
+        const k = Math.min(1, (now - t0) / ms), e = easeInOut(k);
+        svgEl.setAttribute('viewBox', from.map((a, i) => (a + (to[i] - a) * e).toFixed(2)).join(' '));
+        if (k < 1 && svgEl.isConnected) requestAnimationFrame(f); else res();
+      })(t0);
+    });
+  }
   function diagram(el, rootSpec, opts) {
     opts = opts || {};
     const uid = 'd' + (++diagSeq);
@@ -242,7 +256,7 @@
       crumbs.innerHTML = '';
       stack.forEach((f, k) => {
         if (k) crumbs.appendChild(h('span', { class: 'sep' }, '‹'));
-        crumbs.appendChild(h('button', { type: 'button', class: k === stack.length - 1 ? 'on' : '', onclick: () => { stack.length = k + 1; render(); } }, f.label));
+        crumbs.appendChild(h('button', { type: 'button', class: k === stack.length - 1 ? 'on' : '', onclick: () => back(k) }, f.label));
       });
       crumbs.style.display = stack.length > 1 || rootSpec.title ? '' : 'none';
       const W = spec.width || 900, H = spec.height || 420;
@@ -302,9 +316,11 @@
         g.appendChild(s('text', { y: ly, class: 'dg-label', 'text-anchor': 'middle' }, label));
         if (n.sub) g.appendChild(s('text', { y: 14, class: 'dg-sub', 'text-anchor': 'middle' }, n.sub));
         if (n.children) g.appendChild(s('text', { x: w / 2 - 12, y: -hh / 2 + 16, class: 'dg-dive', 'text-anchor': 'middle' }, '⤵'));
-        const act = () => select(n);
+        if (n.link) { g.classList.add('linked', 'clickable'); g.setAttribute('tabindex', 0); g.appendChild(s('text', { x: -w / 2 + 13, y: -hh / 2 + 17, class: 'dg-link-ic', 'text-anchor': 'middle' }, '🔍')); }
+        const act = () => n.link && !n.children ? openLink(n) : select(n);
         g.addEventListener('click', act);
-        g.addEventListener('dblclick', () => { if (n.children) dive(n); });
+        if (n.link) { g.addEventListener('mouseenter', () => { if (!busy) select(n); }); g.addEventListener('focus', () => { if (!busy) select(n); }); }
+        g.addEventListener('dblclick', () => { if (n.children) dive(n); else if (n.link) openLink(n); });
         g.addEventListener('keydown', ev => { if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); act(); } });
         nLayer.appendChild(g); nodeEls[n.id] = { g, n, shape };
       });
@@ -335,10 +351,55 @@
       panel.appendChild(h('h4', { class: 'dg-p-title' }, (n.icon ? n.icon + ' ' : '') + (n.label || n.id)));
       if (n.sub) panel.appendChild(h('div', { class: 'dg-p-sub' }, n.sub));
       panel.appendChild(h('div', { class: 'dg-p-body', html: n.info || '' }));
-      if (n.children) panel.appendChild(h('button', { type: 'button', class: 'btn primary dive-btn', onclick: () => dive(n) }, '⤵ צלול פנימה: ' + (n.label || n.id)));
+      if (n.children) panel.appendChild(h('button', { type: 'button', class: 'btn primary dive-btn', onclick: () => dive(n) }, '⤵ צלול פנימה (זום אין): ' + (n.label || n.id)));
+      if (n.link) panel.appendChild(h('button', { type: 'button', class: 'btn primary dive-btn link-btn', onclick: () => openLink(n) }, '🔍 זום אין לעמוד המודול'));
       opts.onSelect && opts.onSelect(n, api);
     }
-    function dive(n) { stack.push({ spec: n.children, label: n.label || n.id }); render(); stage.classList.remove('zoom'); void stage.offsetWidth; stage.classList.add('zoom'); }
+    /* ---- zoom navigation ---- */
+    let busy = false;
+    function fullBox() { const sp = stack[stack.length - 1].spec; return [0, 0, sp.width || 900, sp.height || 420]; }
+    function nodeBox(n, fill) {
+      const [, , W, H] = fullBox(), w = n.w || 150, hh = n.h || 56;
+      const bw = Math.max(w * (fill || 1.35), hh * (fill || 1.35) * W / H), bh = bw * H / W;
+      return [n.x - bw / 2, n.y - bh / 2, bw, bh];
+    }
+    function stageAnim(cls) { stage.classList.remove('dg-enter', 'dg-leave'); void stage.offsetWidth; if (cls) stage.classList.add(cls); }
+    async function zoomInto(n, fill) {
+      const o = nodeEls[n.id]; if (!svg) return;
+      svg.classList.add('dg-zooming'); if (o) o.g.classList.add('dg-focus');
+      await animateViewBox(svg, fullBox(), nodeBox(n, fill), 700);
+    }
+    async function dive(n, instant) {
+      if (busy || !n.children) return;
+      if (instant || reduceMotion()) { stack.push({ spec: n.children, label: n.label || n.id, from: n.id }); render(); return; }
+      busy = true;
+      try { await zoomInto(n); stack.push({ spec: n.children, label: n.label || n.id, from: n.id }); render(); stageAnim('dg-enter'); }
+      finally { busy = false; }
+    }
+    async function back(k) {
+      if (busy || k >= stack.length - 1) return;
+      const fromId = stack[k + 1].from;
+      if (reduceMotion()) { stack.length = k + 1; render(); return; }
+      busy = true;
+      try {
+        stageAnim('dg-leave'); await sleep(240); stageAnim(null);
+        stack.length = k + 1; render();
+        const o = fromId && nodeEls[fromId];
+        if (o && svg) {
+          const nb = nodeBox(o.n);
+          svg.classList.add('dg-instant', 'dg-zooming'); o.g.classList.add('dg-focus');
+          svg.setAttribute('viewBox', nb.join(' ')); void svg.getBoundingClientRect();
+          svg.classList.remove('dg-instant');
+          requestAnimationFrame(() => { svg.classList.remove('dg-zooming'); o.g.classList.remove('dg-focus'); });
+          await animateViewBox(svg, nb, fullBox(), 650);
+        }
+      } finally { busy = false; }
+    }
+    async function openLink(n) {
+      if (busy) return; busy = true;
+      try { select(n); await zoomInto(n, 1.05); pendingZoom = true; location.hash = '#/' + n.link; }
+      finally { busy = false; }
+    }
     function highlight(ids, cls) {
       cls = cls || 'hl'; ids = ids || [];
       Object.entries(nodeEls).forEach(([id, o]) => o.g.classList.toggle(cls, ids.includes(id)));
@@ -372,7 +433,7 @@
       }
       highlight([path[path.length - 1]]);
     }
-    const api = { select: id => { const o = nodeEls[id]; if (o) select(o.n); }, highlight, flow, flowEdge, setSub, render, get svg() { return svg; }, get depth() { return stack.length - 1; }, dive: id => { const o = nodeEls[id]; if (o && o.n.children) dive(o.n); }, el: wrap };
+    const api = { select: id => { const o = nodeEls[id]; if (o) select(o.n); }, highlight, flow, flowEdge, setSub, render, get svg() { return svg; }, get depth() { return stack.length - 1; }, dive: (id, animate) => { const o = nodeEls[id]; if (o && o.n.children) dive(o.n, !animate); }, back, el: wrap };
     render();
     return api;
   }
@@ -403,11 +464,27 @@
     content.appendChild(foot);
     main.appendChild(header);
     main.appendChild(h('div', { class: 'page-grid' }, content, toc));
+    main.appendChild(courseBar());
     const io = new IntersectionObserver(ents => ents.forEach(en => {
       if (en.isIntersecting) { const k = [...content.querySelectorAll('section.sec')].indexOf(en.target); [...toc.querySelectorAll('a')].forEach((a, j) => a.classList.toggle('on', j === k)); }
     }), { rootMargin: '-20% 0px -70% 0px' });
     content.querySelectorAll('section.sec').forEach(x => io.observe(x));
     onCleanup(() => io.disconnect());
+  }
+
+  /* fixed "previous / next" bar: lets the learner run the course start-to-end */
+  function courseBar() {
+    const L = ordered(), k = L.findIndex(m => current && m.id === current.id), nb = neighbors(current && current.id);
+    const pct = L.length > 1 ? Math.round(k / (L.length - 1) * 100) : 100;
+    const btn = (m, dir) => m ? h('a', { class: 'btn ' + (dir === 'next' ? 'primary' : '') + ' cb-btn', href: '#/' + m.id, title: m.title },
+      dir === 'next' ? h('span', null, h('small', null, 'הבא'), ' ', m.icon || '', ' ', m.short || m.title, ' ←') : h('span', null, '→ ', h('small', null, 'הקודם'), ' ', m.icon || '', ' ', m.short || m.title))
+      : h('span', { class: 'cb-btn cb-empty' }, dir === 'next' ? '🎉 סוף הקורס' : '');
+    const dots = h('div', { class: 'cb-dots' });
+    L.forEach((m, j) => dots.appendChild(h('a', { href: '#/' + m.id, title: m.title, class: (j === k ? 'on' : j < k ? 'past' : '') + (progress(m.id).quiz >= 0.7 ? ' done' : '') })));
+    return h('div', { class: 'course-bar' }, btn(nb.prev, 'prev'),
+      h('div', { class: 'cb-mid' }, h('div', { class: 'cb-t' }, `שלב ${k + 1} מתוך ${L.length} · ${current ? current.short || current.title : ''}`), dots,
+        h('div', { class: 'cb-track' }, h('div', { class: 'cb-fill', style: { width: pct + '%' } }))),
+      btn(nb.next, 'next'));
   }
 
   /* ---------- registry & router ---------- */
@@ -441,6 +518,9 @@
       try { mod.render(main); } catch (e) { console.error(e); main.appendChild(h('div', { class: 'callout warn' }, 'שגיאה בטעינת המודול: ' + e.message)); }
       mark(mod.id, 'visited', true);
     }
+    main.classList.remove('page-enter', 'page-zoom-enter'); void main.offsetWidth;
+    if (!reduceMotion()) main.classList.add(pendingZoom ? 'page-zoom-enter' : 'page-enter');
+    pendingZoom = false;
     renderNav();
   }
   /* RTL fix: isolate numeric ranges like "32–120" or "0.1-0.3" so the bidi algorithm doesn't reverse them */

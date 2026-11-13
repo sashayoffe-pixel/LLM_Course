@@ -478,7 +478,7 @@ Final Answer: נפתח BILL-1307 (P1)...`;
 
   /* ===================== MODULE ===================== */
   LA.register({
-    id: 'agents', order: 60, group: 'build', icon: '🤖', short: 'סוכנים',
+    id: 'agents', order: 50, group: 'build', icon: '🤖', short: 'סוכנים',
     title: 'סוכנים ותתי-סוכנים — LLM שפועל בעולם',
     render(main) {
       LA.page(main, {

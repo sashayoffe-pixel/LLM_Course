@@ -233,7 +233,7 @@
   }
 
   LA.register({
-    id: 'exam', order: 210, group: 'ref', icon: '🎓', short: 'מבחן מסכם', title: 'מבחן מסכם',
+    id: 'exam', order: 200, group: 'ref', icon: '🎓', short: 'מבחן מסכם', title: 'מבחן מסכם',
     render(main) {
       const st = { topics: new Set(TOPICS.map(t => t.id)), mode: 'all' };
       const refs = {};

@@ -238,7 +238,7 @@
   const sortAZ = (a, b) => a.en.localeCompare(b.en, 'en', { sensitivity: 'base' });
 
   LA.register({
-    id: 'glossary', order: 200, group: 'ref', icon: '📖', short: 'מילון מונחים', title: 'מילון מונחים',
+    id: 'glossary', order: 210, group: 'ref', icon: '📖', short: 'מילון מונחים', title: 'מילון מונחים',
     render(main) {
       const st = { q: '', cat: 'all', view: 'cat' };
       const refs = { chipEls: [], viewEls: [] };

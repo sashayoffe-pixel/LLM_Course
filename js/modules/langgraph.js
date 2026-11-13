@@ -536,7 +536,7 @@ react = b.compile()
   /* Module                                                              */
   /* ------------------------------------------------------------------ */
   LA.register({
-    id: 'langgraph', order: 50, group: 'build', icon: '🕸️', short: 'LangGraph', title: 'LangGraph — גרפים של מצבים לסוכנים אמינים',
+    id: 'langgraph', order: 60, group: 'build', icon: '🕸️', short: 'LangGraph', title: 'LangGraph — גרפים של מצבים לסוכנים אמינים',
     render(main) {
       LA.page(main, {
         icon: '🕸️', title: 'LangGraph — גרפים של מצבים לסוכנים אמינים',

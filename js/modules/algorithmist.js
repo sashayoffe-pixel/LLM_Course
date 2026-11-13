@@ -201,7 +201,7 @@
       { x: 140, y: 497, w: 850, h: 76, label: 'תשתית', color: 'ext' }
     ],
     nodes: [
-      { id: 'chat', x: 620, y: 60, label: "ממשק צ'אט", sub: 'Web · Slack · קול', color: 'ui',
+      { id: 'chat', link: 'chat', x: 620, y: 60, label: "ממשק צ'אט", sub: 'Web · Slack · קול', color: 'ui',
         info: '<p>נקודת המגע עם המשתמש. אחראי על streaming, היסטוריה, הצגת ציטוטים ואיסוף משוב.</p><p><a href="#/chat">למודול Chat ←</a></p>',
         children: {
           title: 'מבנה ממשק צ׳אט', width: 900, height: 280,
@@ -214,7 +214,7 @@
           ],
           edges: [{ from: 'w', to: 'sse', both: true }, { from: 'sse', to: 'sess', both: true }, { from: 'sess', to: 'hist' }, { from: 'sess', to: 'ctx' }]
         } },
-      { id: 'agent', x: 700, y: 155, label: 'סוכן מתזמר', sub: 'orchestrator', color: 'ctrl',
+      { id: 'agent', link: 'agents', x: 700, y: 155, label: 'סוכן מתזמר', sub: 'orchestrator', color: 'ctrl',
         info: `<p>מקבל מטרה, מתכנן ומחליט אילו יכולות להפעיל. מתאים ל-${MB('opus')} כשהתכנון מורכב, או ${MB('sonnet')} לעבודה יומיומית.</p><p><a href="#/agents">למודול Agents ←</a></p>`,
         children: {
           title: 'לולאת הסוכן', width: 900, height: 320,
@@ -228,9 +228,9 @@
           ],
           edges: [{ from: 'goal', to: 'think' }, { from: 'think', to: 'act', label: 'כלי' }, { from: 'act', to: 'obs', dashed: true }, { from: 'obs', to: 'think', bend: -30 }, { from: 'think', to: 'done', label: 'סיום' }]
         } },
-      { id: 'sub', x: 450, y: 155, label: 'תתי-סוכנים', sub: 'workers', color: 'ctrl',
+      { id: 'sub', link: 'agents', x: 450, y: 155, label: 'תתי-סוכנים', sub: 'workers', color: 'ctrl',
         info: `<p>סוכנים ממוקדים שמקבלים תת-משימה ו-context נקי. לרוב ${MB('sonnet')} או ${MB('haiku')} לעבודה קריאה-כבדה — זול ומקבילי.</p><p><a href="#/agents">ניתוב תתי-סוכנים ←</a></p>` },
-      { id: 'rag', x: 790, y: 250, label: 'RAG', sub: 'אחזור ידע', color: 'tool',
+      { id: 'rag', link: 'rag', x: 790, y: 250, label: 'RAG', sub: 'אחזור ידע', color: 'tool',
         info: '<p>מביא ידע פרטי ועדכני לתוך ה-context.</p><p><a href="#/rag">למודול RAG ←</a></p>',
         children: {
           title: 'צינור RAG', width: 900, height: 330,
@@ -257,9 +257,9 @@
           ],
           edges: [{ from: 'ing', to: 'chk' }, { from: 'chk', to: 'emb' }, { from: 'emb', to: 'idx' }, { from: 'q', to: 'ret' }, { from: 'ret', to: 'rr' }, { from: 'rr', to: 'gen' }, { from: 'idx', to: 'ret', dashed: true }]
         } },
-      { id: 'tools', x: 620, y: 250, label: 'כלים / APIs', sub: 'function calling', color: 'tool',
+      { id: 'tools', link: 'agents', x: 620, y: 250, label: 'כלים / APIs', sub: 'function calling', color: 'tool',
         info: '<p>פונקציות שהמודל יכול להפעיל: DB, CRM, חיפוש, קוד. כל כלי = משטח תקיפה.</p><p><a href="#/agents">כלים בסוכנים ←</a></p>', children: toolCallSpec },
-      { id: 'skills', x: 450, y: 250, label: 'Skills', sub: 'ידע ארוז', color: 'tool',
+      { id: 'skills', link: 'skills', x: 450, y: 250, label: 'Skills', sub: 'ידע ארוז', color: 'tool',
         info: '<p>הוראות + סקריפטים שנטענים לפי צורך.</p><p><a href="#/skills">למודול Skills ←</a></p>',
         children: {
           title: 'טעינה הדרגתית של Skill', width: 900, height: 240,
@@ -270,7 +270,7 @@
           ],
           edges: [{ from: 'meta', to: 'body', label: 'טריגר' }, { from: 'body', to: 'res', label: 'צורך' }]
         } },
-      { id: 'mcp', x: 280, y: 250, label: 'MCP', sub: 'פרוטוקול כלים', color: 'tool',
+      { id: 'mcp', link: 'agents', x: 280, y: 250, label: 'MCP', sub: 'פרוטוקול כלים', color: 'tool',
         info: '<p>Model Context Protocol: תקן לחיבור כלים, משאבים ו-prompts משרתים חיצוניים לכל סוכן.</p><p><a href="#/agents">MCP במודול הסוכנים ←</a></p>',
         children: {
           title: 'MCP', width: 900, height: 240,
@@ -281,9 +281,9 @@
           ],
           edges: [{ from: 'host', to: 'srv', both: true }, { from: 'srv', to: 'sys', both: true }]
         } },
-      { id: 'langchain', x: 790, y: 345, label: 'LangChain', sub: 'רכיבים', color: 'data',
+      { id: 'langchain', link: 'langchain', x: 790, y: 345, label: 'LangChain', sub: 'רכיבים', color: 'data',
         info: '<p>ספריית אבני בניין: מודלים, prompts, retrievers, parsers.</p><p><a href="#/langchain">למודול LangChain ←</a></p>' },
-      { id: 'langgraph', x: 560, y: 345, label: 'LangGraph', sub: 'תזמור כגרף', color: 'data',
+      { id: 'langgraph', link: 'langgraph', x: 560, y: 345, label: 'LangGraph', sub: 'תזמור כגרף', color: 'data',
         info: '<p>מריץ סוכנים וזרימות כגרף מצבים עם checkpoint ו-interrupt. כאן קובעים מודל לכל צומת.</p><p><a href="#/langgraph">למודול LangGraph ←</a></p>',
         children: {
           title: 'גרף LangGraph', width: 900, height: 300,
@@ -297,7 +297,7 @@
           ],
           edges: [{ from: 's', to: 'r' }, { from: 'r', to: 'a', label: 'faq' }, { from: 'r', to: 'b', label: 'complex' }, { from: 'a', to: 'e' }, { from: 'b', to: 'e' }, { from: 'r', to: 'cp', dashed: true }]
         } },
-      { id: 'comfyui', x: 280, y: 345, label: 'ComfyUI', sub: 'גרף diffusion', color: 'data',
+      { id: 'comfyui', link: 'comfyui', x: 280, y: 345, label: 'ComfyUI', sub: 'גרף diffusion', color: 'data',
         info: '<p>מריץ workflows של מודלי תמונה דרך API.</p><p><a href="#/comfyui">למודול ComfyUI ←</a></p>',
         children: {
           title: 'Workflow בסיסי', width: 900, height: 260,
@@ -310,11 +310,11 @@
           ],
           edges: [{ from: 'ck', to: 'clip' }, { from: 'clip', to: 'ks' }, { from: 'ks', to: 'vae' }, { from: 'vae', to: 'save' }]
         } },
-      { id: 'llm', x: 720, y: 440, label: 'LLM', sub: 'Haiku · Sonnet · Opus', color: 'llm', w: 170,
+      { id: 'llm', link: 'llm', x: 720, y: 440, label: 'LLM', sub: 'Haiku · Sonnet · Opus', color: 'llm', w: 170,
         info: `<p>המנוע. בחרו tier לפי משימה: ${MB('haiku')} ${MB('sonnet')} ${MB('opus')}</p><p><a href="#/llm">למודול LLM ←</a></p>`, children: llmSpec },
-      { id: 'emb', x: 480, y: 440, label: 'Embeddings', sub: 'טקסט → וקטור', color: 'llm',
+      { id: 'emb', link: 'rag', x: 480, y: 440, label: 'Embeddings', sub: 'טקסט → וקטור', color: 'llm',
         info: '<p>מודל נפרד (לא Claude) שממיר טקסט לוקטור לחיפוש סמנטי. בחירתו משפיעה ישירות על recall.</p><p><a href="#/rag">embeddings ב-RAG ←</a></p>' },
-      { id: 'diff', x: 280, y: 440, label: 'Diffusion', sub: 'תמונה / וידאו', color: 'llm',
+      { id: 'diff', link: 'comfyui', x: 280, y: 440, label: 'Diffusion', sub: 'תמונה / וידאו', color: 'llm',
         info: '<p>מודלי דיפוזיה (SDXL, Flux וכו׳) — ComfyUI מריץ אותם.</p><p><a href="#/comfyui">ComfyUI ←</a></p>' },
       { id: 'gpu', x: 540, y: 535, w: 560, label: 'GPU / Serving', sub: 'API מנוהל · vLLM · batching · KV cache', color: 'ext',
         info: '<p>מאיפה מגיע החישוב: API מנוהל (Anthropic) או שרת עצמי ל-embeddings/diffusion.</p>',
@@ -329,7 +329,7 @@
           ],
           edges: [{ from: 'q', to: 'bat' }, { from: 'bat', to: 'pre' }, { from: 'pre', to: 'dec' }, { from: 'pre', to: 'kv', dashed: true }, { from: 'kv', to: 'dec', dashed: true }]
         } },
-      { id: 'clearml', x: 70, y: 300, w: 100, h: 540, label: 'ClearML', sub: 'MLOps', color: 'store',
+      { id: 'clearml', link: 'clearml', x: 70, y: 300, w: 100, h: 540, label: 'ClearML', sub: 'MLOps', color: 'store',
         info: '<p>מסילה צדדית לכל השכבות: מעקב ניסויים (prompts, chunking, embeddings), גרסאות datasets, pipelines לילתיים ותורי GPU.</p><p><a href="#/clearml">למודול ClearML ←</a></p>',
         children: {
           title: 'רכיבי ClearML', width: 900, height: 260,
