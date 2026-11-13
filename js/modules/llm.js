@@ -829,9 +829,10 @@
     const box = h('div'); el.appendChild(box);
     const api = LA.diagram(box, ROOT_SPEC);
     DIVE_PATHS.forEach(dp => jump.appendChild(h('button', {
-      type: 'button', class: 'btn', onclick: () => {
-        const first = api.el.querySelector('.dg-crumbs button'); if (api.depth > 0 && first) first.click();
-        dp.path.forEach(id => api.dive(id));
+      type: 'button', class: 'btn', onclick: async () => {
+        /* travel there with the zoom animation: zoom out to the top, then zoom in level by level */
+        if (api.depth > 0) await api.back(0);
+        for (const id of dp.path) await api.dive(id, true);
       }
     }, dp.label)));
     el.insertAdjacentHTML('beforeend', LA.callout('tip', '<p><b>איך לקרוא את הדיאגרמות:</b> ברמות 2–3 הזרימה <b>מלמטה למעלה</b> (כמו בציור הקלאסי של ה-Transformer). הקווים הירוקים המקווקווים הם <b>חיבורי שארית</b>. ה-KV cache מסומן כמסד נתונים כי הוא זיכרון — לא חישוב.</p>'));

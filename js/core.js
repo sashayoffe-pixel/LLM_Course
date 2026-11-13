@@ -327,7 +327,7 @@
         g.appendChild(s('text', { y: ly, class: 'dg-label', 'text-anchor': 'middle' }, label));
         if (n.sub) g.appendChild(s('text', { y: 14, class: 'dg-sub', 'text-anchor': 'middle' }, n.sub));
         if (n.children) g.appendChild(s('text', { x: w / 2 - 12, y: -hh / 2 + 16, class: 'dg-dive', 'text-anchor': 'middle' }, '⤵'));
-        if (n.link) { g.classList.add('linked', 'clickable'); g.setAttribute('tabindex', 0); g.appendChild(s('text', { x: -w / 2 + 13, y: -hh / 2 + 17, class: 'dg-link-ic', 'text-anchor': 'middle' }, '🔍')); }
+        if (n.link) { g.classList.add('linked', 'clickable'); g.setAttribute('tabindex', 0); }
         /* click: block with an inner level -> zoom-dive into it; module link -> zoom into the chapter; otherwise show info */
         const act = () => n.children ? dive(n) : n.link ? openLink(n) : select(n);
         g.addEventListener('click', act);
@@ -367,8 +367,9 @@
       panel.appendChild(h('h4', { class: 'dg-p-title' }, (n.icon ? n.icon + ' ' : '') + (n.label || n.id)));
       if (n.sub) panel.appendChild(h('div', { class: 'dg-p-sub' }, n.sub));
       panel.appendChild(h('div', { class: 'dg-p-body', html: n.info || '' }));
-      if (n.children) panel.appendChild(h('button', { type: 'button', class: 'btn primary dive-btn', onclick: () => dive(n) }, '⤵ צלול פנימה (זום אין): ' + (n.label || n.id)));
-      if (n.link) panel.appendChild(h('button', { type: 'button', class: 'btn primary dive-btn link-btn', onclick: () => openLink(n) }, '🔍 זום אין לעמוד המודול'));
+      if (n.children) panel.appendChild(h('div', { class: 'dg-p-act' }, '⤵ לחצו על הבלוק כדי לצלול לתוכו'));
+      else if (n.link) panel.appendChild(h('div', { class: 'dg-p-act' }, '👆 לחצו על הבלוק כדי להיכנס לפרק'));
+      if (n.children && n.link) panel.appendChild(h('a', { class: 'dg-p-link', href: '#/' + n.link }, 'לפרק המלא ←'));
       opts.onSelect && opts.onSelect(n, api);
     }
     /* ---- zoom navigation ---- */
@@ -466,7 +467,7 @@
       }
       highlight([path[path.length - 1]]);
     }
-    const api = { select: id => { const o = nodeEls[id]; if (o) select(o.n); }, highlight, flow, flowEdge, setSub, render, get svg() { return svg; }, get depth() { return stack.length - 1; }, dive: (id, animate) => { const o = nodeEls[id]; if (o && o.n.children) dive(o.n, !animate); }, back, revealLink, hasLink: id => Object.values(nodeEls).some(x => x.n.link === id), el: wrap };
+    const api = { select: id => { const o = nodeEls[id]; if (o) select(o.n); }, highlight, flow, flowEdge, setSub, render, get svg() { return svg; }, get depth() { return stack.length - 1; }, dive: (id, animate) => { const o = nodeEls[id]; return o && o.n.children ? dive(o.n, !animate) : Promise.resolve(); }, back, revealLink, hasLink: id => Object.values(nodeEls).some(x => x.n.link === id), el: wrap };
     liveDiagrams.push(api);
     render();
     return api;
@@ -560,6 +561,7 @@
     const id = (location.hash.replace(/^#\/?/, '') || 'home').split('/')[0];
     const mod = modules.find(m => m.id === id) || modules.find(m => m.id === 'home') || modules[0];
     cleanups.forEach(f => { try { f(); } catch (e) { /* ignore */ } }); cleanups = [];
+    const prevId = appHistory[appHistory.length - 1], wasBack = navBack;
     current = mod;
     liveDiagrams = [];
     if (navBack) { appHistory.pop(); navBack = false; }
@@ -576,7 +578,10 @@
     main.classList.remove('page-enter', 'page-zoom-enter', 'page-zoom-out'); void main.offsetWidth;
     const upFrom = pendingUp; pendingUp = null;
     const target = upFrom && liveDiagrams.find(d => d.hasLink(upFrom));
-    if (!reduceMotion()) main.classList.add(target ? 'page-zoom-out' : pendingZoom ? 'page-zoom-enter' : 'page-enter');
+    /* forward to a new topic = zoom in; backward / up = zoom out */
+    const L = ordered(), ix = x => L.findIndex(m => m.id === x);
+    const dir = !prevId || prevId === mod.id ? 'fade' : (target || upFrom || wasBack || ix(mod.id) < ix(prevId)) ? 'out' : 'in';
+    if (!reduceMotion()) main.classList.add(dir === 'out' ? 'page-zoom-out' : dir === 'in' || pendingZoom ? 'page-zoom-enter' : 'page-enter');
     pendingZoom = false;
     if (target) requestAnimationFrame(() => target.revealLink(upFrom));
     renderNav();

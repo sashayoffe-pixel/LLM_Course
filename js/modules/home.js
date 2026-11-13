@@ -1,7 +1,6 @@
 /* LLM Academy — home: the big map of how every topic connects to the LLM */
 (function () {
   'use strict';
-  const go = (id, t) => `<p style="margin-top:10px"><a class="btn primary" href="#/${id}">${t || 'למודול המלא'} ←</a></p>`;
 
   const TOPICS = [
     { id: 'llm', icon: '🧠', t: 'LLM מבפנים', d: 'טוקנים, embeddings, טרנספורמר, attention — עד הנוירון הבודד.' },
@@ -21,8 +20,8 @@
 
   const MAP = {
     width: 900, height: 540,
-    intro: `<div class="dg-hint">🖱️ <b>רחפו</b> מעל רכיב כדי לקרוא על תפקידו ביחס ל-LLM שבמרכז, ו<b>לחצו</b> עליו כדי לעשות <b>זום אין</b> ישר לעמוד המודול 🔍.<br>
-      בתוך כל מודול תמצאו דיאגרמות שאפשר <b class="dive-ic">⤵</b> לצלול לתוכן בזום, עד הרכיב הקטן ביותר — ו"לצאת" בזום אאוט דרך שורת הניווט שמעל הדיאגרמה.</div>`,
+    intro: `<div class="dg-hint">🖱️ <b>רחפו</b> מעל רכיב כדי לקרוא על תפקידו ביחס ל-LLM שבמרכז, ו<b>לחצו</b> עליו כדי להיכנס אליו — בזום אין ישר לפרק.<br>
+      בתוך כל פרק, לחיצה על בלוק עם <b class="dive-ic">⤵</b> צוללת לתוכו בזום — עד הרכיב הקטן ביותר; <b>⬆ רמה למעלה</b> יוצא בזום אאוט.</div>`,
     groups: [
       { x: 655, y: 30, w: 230, h: 485, label: 'מול המשתמש ותזמור', color: 'ui' },
       { x: 15, y: 30, w: 230, h: 485, label: 'יכולות והרחבות', color: 'tool' }
@@ -31,32 +30,32 @@
       { id: 'llm', link: 'llm', x: 450, y: 272, w: 150, h: 150, shape: 'circle', icon: '🧠', label: 'LLM', sub: 'המוח: מנבא טוקן הבא', color: 'llm',
         info: `<p>מודל שפה גדול הוא רשת נוירונים (Transformer) שאומנה לחזות את <b>הטוקן הבא</b>. כל שאר הרכיבים במפה קיימים כדי
         להזין אותו בהקשר הנכון, לתת לו ידיים (כלים), לנהל את הזרימה סביבו או למדוד אותו.</p>
-        <p>בפנים: embeddings → עשרות שכבות של attention + MLP → הסתברות לכל טוקן במילון. בקורס נצלול עד <b>נוירון בודד</b>.</p>${go('llm')}` },
+        <p>בפנים: embeddings → עשרות שכבות של attention + MLP → הסתברות לכל טוקן במילון. בקורס נצלול עד <b>נוירון בודד</b>.</p>` },
       { id: 'chat', link: 'chat', x: 770, y: 92, icon: '💬', label: "ממשק צ'אט", sub: 'Chat UI', color: 'ui',
         info: `<p>החלון שבו המשתמש מדבר עם המודל. הסוד: המודל <b>חסר זיכרון</b> — הממשק שולח בכל תור את כל ההיסטוריה
-        (system + user + assistant), מזרים תשובה טוקן-אחר-טוקן ומנהל את גבולות ה-context window.</p>${go('chat')}` },
+        (system + user + assistant), מזרים תשובה טוקן-אחר-טוקן ומנהל את גבולות ה-context window.</p>` },
       { id: 'langgraph', link: 'langgraph', x: 770, y: 272, icon: '🕸️', label: 'LangGraph', sub: 'גרף מצבים / תזמור', color: 'ctrl',
         info: `<p>מנוע תזמור: מגדירים <b>State</b>, <b>nodes</b> (פונקציות/קריאות LLM) ו-<b>edges</b> (כולל תנאים ולולאות).
-        מאפשר זיכרון מתמשך (checkpoints), עצירה לאישור אנושי ומערכות מרובות סוכנים.</p>${go('langgraph')}` },
+        מאפשר זיכרון מתמשך (checkpoints), עצירה לאישור אנושי ומערכות מרובות סוכנים.</p>` },
       { id: 'agents', link: 'agents', x: 770, y: 452, icon: '🤖', label: 'סוכנים', sub: 'LLM + כלים + לולאה', color: 'tool',
         info: `<p>סוכן = LLM שמחליט בעצמו <b>איזה כלי להפעיל ומתי לעצור</b>. תת-סוכנים מקבלים משימות ממוקדות —
         וכל אחד מהם מקבל מודל לפי מורכבות: ${LA.modelBadge('haiku')} לסיווג, ${LA.modelBadge('sonnet')} לעבודה שוטפת,
-        ${LA.modelBadge('opus')} לתכנון.</p>${go('agents')}` },
+        ${LA.modelBadge('opus')} לתכנון.</p>` },
       { id: 'rag', link: 'rag', x: 450, y: 78, icon: '📚', label: 'RAG', sub: 'אחזור מסמכים → הקשר', color: 'store',
         info: `<p>Retrieval-Augmented Generation: לפני שהמודל עונה, מאחזרים את קטעי המסמכים הרלוונטיים (חיפוש וקטורי)
-        ומדביקים אותם לפרומפט. כך המודל עונה על <b>המידע שלכם</b>, עדכני ועם ציטוטים.</p>${go('rag')}` },
+        ומדביקים אותם לפרומפט. כך המודל עונה על <b>המידע שלכם</b>, עדכני ועם ציטוטים.</p>` },
       { id: 'clearml', link: 'clearml', x: 450, y: 470, icon: '📈', label: 'ClearML', sub: 'MLOps: ניסויים ופריסה', color: 'data',
         info: `<p>פלטפורמת MLOps: רושמת כל ניסוי (קוד, פרמטרים, מדדים), מנהלת גרסאות דאטה, מריצה צינורות על GPU דרך תורים
-        ומגישה מודלים. סביב LLM: מעקב אחרי fine-tuning, ניסויי RAG ו-evals.</p>${go('clearml')}` },
+        ומגישה מודלים. סביב LLM: מעקב אחרי fine-tuning, ניסויי RAG ו-evals.</p>` },
       { id: 'skills', link: 'skills', x: 130, y: 92, icon: '🧰', label: 'Skills', sub: 'SKILL.md נטען לפי צורך', color: 'tool',
         info: `<p>חבילת ידע+כלים לסוכן: תיקייה עם SKILL.md (שם, תיאור, הוראות) וסקריפטים. המודל רואה רק את התיאור הקצר,
-        וטוען את השאר רק כשהמשימה דורשת — חוסך context.</p>${go('skills')}` },
+        וטוען את השאר רק כשהמשימה דורשת — חוסך context.</p>` },
       { id: 'langchain', link: 'langchain', x: 130, y: 272, icon: '🔗', label: 'LangChain', sub: 'רכיבים: prompt|llm|parser', color: 'ctrl',
         info: `<p>ספריית רכיבים שעוטפת מודלים מכל הספקים בממשק אחיד: תבניות פרומפט, parsers, retrievers, tools,
-        וחיבור ב-<code>|</code>. LangGraph בנוי מעליה לתזמור מורכב.</p>${go('langchain')}` },
+        וחיבור ב-<code>|</code>. LangGraph בנוי מעליה לתזמור מורכב.</p>` },
       { id: 'comfyui', link: 'comfyui', x: 130, y: 452, icon: '🎨', label: 'ComfyUI', sub: 'גרף nodes לדיפוזיה', color: 'neuron',
         info: `<p>ממשק nodes ויזואלי למודלי תמונה/וידאו. ה-text encoder שבו הוא טרנספורמר — אותה משפחה של LLM;
-        ו-LLM יכול לכתוב לו פרומפטים או להפעיל אותו ככלי דרך API.</p>${go('comfyui')}` }
+        ו-LLM יכול לכתוב לו פרומפטים או להפעיל אותו ככלי דרך API.</p>` }
     ],
     edges: [
       { from: 'chat', to: 'langgraph', label: 'הודעה' },

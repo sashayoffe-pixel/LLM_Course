@@ -228,7 +228,7 @@
     const api = LA.diagram(el, ARCH);
     [['▶ שאלת FAQ', ['widget', 'api', 'graph', 'rag', 'vdb']], ['▶ פעולה בחשבון', ['widget', 'api', 'graph', 'tools']], ['▶ איור חשבון', ['widget', 'api', 'graph', 'comfy']]]
       .forEach(([t, p]) => row.appendChild(h('button', { type: 'button', class: 'btn', onclick: () => { if (api.depth === 0) api.flow(p, 500); } }, t)));
-    row.appendChild(h('button', { type: 'button', class: 'btn ghost', onclick: () => { if (api.depth === 0) api.select('graph'); api.dive('graph'); } }, '⤵ קפוץ לגרף'));
+    row.appendChild(h('button', { type: 'button', class: 'btn ghost', onclick: async () => { if (api.depth > 0) await api.back(0); api.dive('graph', true); } }, '⤵ קפוץ לגרף'));
     el.insertAdjacentHTML('beforeend', LA.callout('llm', `ה-LLM מופיע במערכת ב-<b>12 תפקידים שונים</b> (ראו הטבלה הבאה) — אבל אף אחד מהם לא "מחליט לבד" על כסף, הרשאות או ניתוק. ההחלטות האלה נאכפות בקוד ובאישור אדם.
       זו ההבחנה החשובה ביותר בתכנון: <b>LLM לשיפוט ושפה, קוד לכללים ולהרשאות</b>.`));
   }
