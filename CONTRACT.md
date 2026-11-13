@@ -75,7 +75,7 @@ Mounting widgets (take a container element):
   Click a node → its `info` in the side panel; nodes with `children` show ⤵ and a "dive in" button that ZOOMS INTO the node; breadcrumbs zoom back out.
   Nodes with `link` (and no children): hover shows info, click zooms into the node and navigates to `#/<link>` with a zoom-in page transition.
   api: `select(id)`, `highlight([ids])`, `flow([id1,id2,...], msPerEdge?, color?)` (Promise, animates a glowing dot along edges),
-  `flowEdge(from,to,ms,color)`, `setSub(id, text)`, `dive(id, animate?)` (instant unless animate), `back(level)`, `depth`, `svg`, `el`; `opts.onRender(api, depth)`, `opts.onSelect(node, api)`, `opts.compact` (panel under the svg).
+  `flowEdge(from,to,ms,color)`, `setSub(id, text)`, `dive(id, animate?)` (instant unless animate), `back(level)` (zoom out to that level; diagrams also show a "⬆ רמה למעלה" button), `revealLink(moduleId)`, `depth`, `svg`, `el`; `opts.onRender(api, depth)`, `opts.onSelect(node, api)`, `opts.compact` (panel under the svg).
   Layout tip: viewBox is `width × height`; keep labels short (≤ ~18 chars Hebrew at w=150; use `sub` for a second line);
   main flows go **right → left** (Hebrew reading order). Use `LA.s(tag, attrs, ...children)` to draw custom SVG.
 * DOM: `LA.h(tag, attrs, ...children)` (attrs: `class`, `style` obj, `html`, `text`, `onclick`...), `LA.s(...)` for SVG.

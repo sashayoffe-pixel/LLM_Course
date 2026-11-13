@@ -217,7 +217,11 @@
      spec = { width, height, title?, nodes:[{id,x,y,w,h,label,sub,color,shape,icon,info,children}], edges:[{from,to,label,dashed,color,bend,both}], groups:[{x,y,w,h,label,color}] }
      x,y = node CENTER. Clicking a node shows `info` in the side panel; if it has `children` (a nested spec) a "dive in" button zooms in. */
   let diagSeq = 0;
-  let pendingZoom = false;
+  let pendingZoom = false;      // next page enters with zoom-in (came from a map node)
+  let pendingUp = null;         // module id we are zooming OUT of, back to the architecture map
+  let navBack = false;          // our own "back" button triggered this navigation
+  const appHistory = [];        // ids of pages visited in this tab (for the back button)
+  let liveDiagrams = [];        // diagrams mounted on the current page
   const reduceMotion = () => !!(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches);
   const easeInOut = k => k < .5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2;
   function animateViewBox(svgEl, from, to, ms) {
@@ -254,6 +258,7 @@
     function render() {
       const top = stack[stack.length - 1], spec = top.spec;
       crumbs.innerHTML = '';
+      if (stack.length > 1) crumbs.appendChild(h('button', { type: 'button', class: 'dg-up', title: 'חזרה לרמה הגבוהה יותר בארכיטקטורה (זום אאוט)', onclick: () => back(stack.length - 2) }, '⬆ רמה למעלה'));
       stack.forEach((f, k) => {
         if (k) crumbs.appendChild(h('span', { class: 'sep' }, '‹'));
         crumbs.appendChild(h('button', { type: 'button', class: k === stack.length - 1 ? 'on' : '', onclick: () => back(k) }, f.label));
@@ -363,6 +368,11 @@
       const bw = Math.max(w * (fill || 1.35), hh * (fill || 1.35) * W / H), bh = bw * H / W;
       return [n.x - bw / 2, n.y - bh / 2, bw, bh];
     }
+    /* keep the breadcrumb row (with the "up one level" button) visible below the sticky top bar */
+    function keepInView() {
+      const r = wrap.getBoundingClientRect();
+      if (r.top < 70 || r.top > innerHeight * 0.6) wrap.scrollIntoView({ block: 'start', behavior: reduceMotion() ? 'auto' : 'smooth' });
+    }
     function stageAnim(cls) { stage.classList.remove('dg-enter', 'dg-leave'); void stage.offsetWidth; if (cls) stage.classList.add(cls); }
     async function zoomInto(n, fill) {
       const o = nodeEls[n.id]; if (!svg) return;
@@ -373,7 +383,7 @@
       if (busy || !n.children) return;
       if (instant || reduceMotion()) { stack.push({ spec: n.children, label: n.label || n.id, from: n.id }); render(); return; }
       busy = true;
-      try { await zoomInto(n); stack.push({ spec: n.children, label: n.label || n.id, from: n.id }); render(); stageAnim('dg-enter'); }
+      try { await zoomInto(n); stack.push({ spec: n.children, label: n.label || n.id, from: n.id }); render(); stageAnim('dg-enter'); keepInView(); }
       finally { busy = false; }
     }
     async function back(k) {
@@ -383,17 +393,29 @@
       busy = true;
       try {
         stageAnim('dg-leave'); await sleep(240); stageAnim(null);
-        stack.length = k + 1; render();
-        const o = fromId && nodeEls[fromId];
-        if (o && svg) {
-          const nb = nodeBox(o.n);
-          svg.classList.add('dg-instant', 'dg-zooming'); o.g.classList.add('dg-focus');
-          svg.setAttribute('viewBox', nb.join(' ')); void svg.getBoundingClientRect();
-          svg.classList.remove('dg-instant');
-          requestAnimationFrame(() => { svg.classList.remove('dg-zooming'); o.g.classList.remove('dg-focus'); });
-          await animateViewBox(svg, nb, fullBox(), 650);
-        }
+        stack.length = k + 1; render(); keepInView();
+        await zoomOutOf(fromId && nodeEls[fromId]);
       } finally { busy = false; }
+    }
+    /* start zoomed into node o, then pull the camera back to the full diagram */
+    async function zoomOutOf(o, ms) {
+      if (!o || !svg) return;
+      const nb = nodeBox(o.n, o.n.link ? 1.05 : 1.35);
+      svg.classList.add('dg-instant', 'dg-zooming'); o.g.classList.add('dg-focus');
+      svg.setAttribute('viewBox', nb.join(' ')); void svg.getBoundingClientRect();
+      svg.classList.remove('dg-instant');
+      requestAnimationFrame(() => { svg.classList.remove('dg-zooming'); o.g.classList.remove('dg-focus'); });
+      await animateViewBox(svg, nb, fullBox(), ms || 750);
+    }
+    /* used when coming "up" from a module page: zoom out of the node that links to it */
+    async function revealLink(modId) {
+      if (stack.length > 1) { stack.length = 1; render(); }
+      const o = Object.values(nodeEls).find(x => x.n.link === modId); if (!o) return false;
+      wrap.scrollIntoView({ block: 'center' });
+      if (reduceMotion()) { select(o.n); return true; }
+      busy = true;
+      try { await zoomOutOf(o, 850); select(o.n); } finally { busy = false; }
+      return true;
     }
     async function openLink(n) {
       if (busy) return; busy = true;
@@ -433,7 +455,8 @@
       }
       highlight([path[path.length - 1]]);
     }
-    const api = { select: id => { const o = nodeEls[id]; if (o) select(o.n); }, highlight, flow, flowEdge, setSub, render, get svg() { return svg; }, get depth() { return stack.length - 1; }, dive: (id, animate) => { const o = nodeEls[id]; if (o && o.n.children) dive(o.n, !animate); }, back, el: wrap };
+    const api = { select: id => { const o = nodeEls[id]; if (o) select(o.n); }, highlight, flow, flowEdge, setSub, render, get svg() { return svg; }, get depth() { return stack.length - 1; }, dive: (id, animate) => { const o = nodeEls[id]; if (o && o.n.children) dive(o.n, !animate); }, back, revealLink, hasLink: id => Object.values(nodeEls).some(x => x.n.link === id), el: wrap };
+    liveDiagrams.push(api);
     render();
     return api;
   }
@@ -462,6 +485,7 @@
       nextMod.prev ? h('a', { class: 'btn', href: '#/' + nextMod.prev.id }, '→ ' + nextMod.prev.title) : h('span'),
       nextMod.next ? h('a', { class: 'btn primary', href: '#/' + nextMod.next.id }, nextMod.next.title + ' ←') : h('span'));
     content.appendChild(foot);
+    if (current && current.id !== 'home') main.appendChild(topNav());
     main.appendChild(header);
     main.appendChild(h('div', { class: 'page-grid' }, content, toc));
     main.appendChild(courseBar());
@@ -470,6 +494,22 @@
     }), { rootMargin: '-20% 0px -70% 0px' });
     content.querySelectorAll('section.sec').forEach(x => io.observe(x));
     onCleanup(() => io.disconnect());
+  }
+
+  /* sticky top bar on every chapter: up to the architecture map + back to the previous page */
+  function topNav() {
+    const prevId = appHistory.length > 1 ? appHistory[appHistory.length - 2] : null;
+    const prevMod = prevId && modules.find(m => m.id === prevId);
+    const up = h('button', { type: 'button', class: 'btn primary tn-up', title: 'זום אאוט חזרה למפת הארכיטקטורה של הקורס',
+      onclick: () => { pendingUp = current.id; location.hash = '#/home'; } }, '⬆ למעלה: מפת הארכיטקטורה');
+    const back = h('button', { type: 'button', class: 'btn tn-back', disabled: !prevMod,
+      title: prevMod ? 'חזרה לעמוד שממנו הגעתם' : 'אין עמוד קודם בהיסטוריה',
+      onclick: () => { if (!prevMod) return; navBack = true; if (prevMod.id === 'home') pendingUp = current.id; history.back(); } },
+      '→ חזרה לעמוד הקודם' + (prevMod ? ': ' + (prevMod.short || prevMod.title) : ''));
+    const crumbs = h('div', { class: 'tn-crumbs' },
+      h('a', { href: '#/home', onclick: ev => { ev.preventDefault(); pendingUp = current.id; location.hash = '#/home'; } }, '🗺️ מפת הארכיטקטורה'),
+      h('span', { class: 'sep' }, '‹'), h('b', null, (current.icon || '') + ' ' + (current.short || current.title)));
+    return h('div', { class: 'top-nav' }, up, back, crumbs);
   }
 
   /* fixed "previous / next" bar: lets the learner run the course start-to-end */
@@ -510,6 +550,10 @@
     const mod = modules.find(m => m.id === id) || modules.find(m => m.id === 'home') || modules[0];
     cleanups.forEach(f => { try { f(); } catch (e) { /* ignore */ } }); cleanups = [];
     current = mod;
+    liveDiagrams = [];
+    if (navBack) { appHistory.pop(); navBack = false; }
+    else if (appHistory[appHistory.length - 1] !== mod.id) appHistory.push(mod.id);
+    if (appHistory.length > 50) appHistory.shift();
     const main = document.getElementById('main');
     main.innerHTML = ''; main.scrollTop = 0; window.scrollTo(0, 0);
     document.body.classList.remove('nav-open');
@@ -518,9 +562,12 @@
       try { mod.render(main); } catch (e) { console.error(e); main.appendChild(h('div', { class: 'callout warn' }, 'שגיאה בטעינת המודול: ' + e.message)); }
       mark(mod.id, 'visited', true);
     }
-    main.classList.remove('page-enter', 'page-zoom-enter'); void main.offsetWidth;
-    if (!reduceMotion()) main.classList.add(pendingZoom ? 'page-zoom-enter' : 'page-enter');
+    main.classList.remove('page-enter', 'page-zoom-enter', 'page-zoom-out'); void main.offsetWidth;
+    const upFrom = pendingUp; pendingUp = null;
+    const target = upFrom && liveDiagrams.find(d => d.hasLink(upFrom));
+    if (!reduceMotion()) main.classList.add(target ? 'page-zoom-out' : pendingZoom ? 'page-zoom-enter' : 'page-enter');
     pendingZoom = false;
+    if (target) requestAnimationFrame(() => target.revealLink(upFrom));
     renderNav();
   }
   /* RTL fix: isolate numeric ranges like "32–120" or "0.1-0.3" so the bidi algorithm doesn't reverse them */
