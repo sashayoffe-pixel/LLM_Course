@@ -72,7 +72,7 @@ Mounting widgets (take a container element):
 * `LA.diagram(el, spec, opts?)` → api. spec:
   `{ title?, width:900, height:420, intro?(html for side panel), nodes:[{id, x, y (CENTER), w=150, h=56, label, sub?, icon?, color?, shape?, info?(html), children?(nested spec), link?(module id)}], edges:[{from, to, label?, dashed?, color?, bend?(px curvature), both?}], groups:[{x, y (top-left), w, h, label, color}] }`
   colors: `llm|data|tool|store|ctrl|ui|ext|warn|ok|neuron` or any hex. shapes: `rect(default)|round|circle|db|diamond`.
-  Click a node → its `info` in the side panel; nodes with `children` show ⤵ and a "dive in" button that ZOOMS INTO the node; breadcrumbs zoom back out.
+  Click a node WITH `children` → zoom-dives straight into it (its `info` becomes the context in the panel of the new level; hover previews info). Click a node without children → its `info` in the side panel. "⬆ רמה למעלה" / breadcrumbs zoom back out.
   Nodes with `link` (and no children): hover shows info, click zooms into the node and navigates to `#/<link>` with a zoom-in page transition.
   api: `select(id)`, `highlight([ids])`, `flow([id1,id2,...], msPerEdge?, color?)` (Promise, animates a glowing dot along edges),
   `flowEdge(from,to,ms,color)`, `setSub(id, text)`, `dive(id, animate?)` (instant unless animate), `back(level)` (zoom out to that level; diagrams also show a "⬆ רמה למעלה" button), `revealLink(moduleId)`, `depth`, `svg`, `el`; `opts.onRender(api, depth)`, `opts.onSelect(node, api)`, `opts.compact` (panel under the svg).

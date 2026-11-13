@@ -246,8 +246,14 @@
     el.appendChild(wrap);
     let nodeEls = {}, edgeEls = [], svg = null, selected = null;
 
-    function defaultPanel(spec) {
-      panel.innerHTML = spec.intro || `<div class="dg-hint">👆 לחצו על רכיב בדיאגרמה כדי לקרוא עליו.<br>רכיב עם הסימן <b class="dive-ic">⤵</b> אפשר לפתוח ולצלול פנימה.</div>`;
+    const HINT = `<div class="dg-hint">👆 <b>לחיצה על בלוק עם <b class="dive-ic">⤵</b></b> צוללת לתוכו בזום — לרמת ארכיטקטורה נמוכה יותר. לחיצה על בלוק בלי ⤵ מציגה הסבר.<br>
+      🖱️ מעבר עכבר מעל בלוק מציג עליו הסבר. <b>⬆ רמה למעלה</b> מחזיר בזום אאוט.</div>`;
+    function defaultPanel(spec, from) {
+      if (from && !spec.intro) {
+        panel.innerHTML = `<div class="dg-ctx">⤵ צללתם לתוך <b>${esc((from.icon ? from.icon + ' ' : '') + (from.label || from.id))}</b></div>` + (from.info || '') + HINT;
+        return;
+      }
+      panel.innerHTML = spec.intro ? spec.intro + ((spec.nodes || []).some(x => x.children) ? HINT : '') : HINT;
     }
     function anchor(n, tx, ty) {
       const w = (n.w || 150) / 2, hh = (n.h || 56) / 2, dx = tx - n.x, dy = ty - n.y;
@@ -322,10 +328,15 @@
         if (n.sub) g.appendChild(s('text', { y: 14, class: 'dg-sub', 'text-anchor': 'middle' }, n.sub));
         if (n.children) g.appendChild(s('text', { x: w / 2 - 12, y: -hh / 2 + 16, class: 'dg-dive', 'text-anchor': 'middle' }, '⤵'));
         if (n.link) { g.classList.add('linked', 'clickable'); g.setAttribute('tabindex', 0); g.appendChild(s('text', { x: -w / 2 + 13, y: -hh / 2 + 17, class: 'dg-link-ic', 'text-anchor': 'middle' }, '🔍')); }
-        const act = () => n.link && !n.children ? openLink(n) : select(n);
+        /* click: block with an inner level -> zoom-dive into it; module link -> zoom into the chapter; otherwise show info */
+        const act = () => n.children ? dive(n) : n.link ? openLink(n) : select(n);
         g.addEventListener('click', act);
-        if (n.link) { g.addEventListener('mouseenter', () => { if (!busy) select(n); }); g.addEventListener('focus', () => { if (!busy) select(n); }); }
-        g.addEventListener('dblclick', () => { if (n.children) dive(n); else if (n.link) openLink(n); });
+        if (n.children || n.link) {
+          let hover = 0;
+          g.addEventListener('mouseenter', () => { clearTimeout(hover); hover = setTimeout(() => { if (!busy && g.isConnected) select(n); }, 140); });
+          g.addEventListener('mouseleave', () => clearTimeout(hover));
+          g.addEventListener('focus', () => { if (!busy) select(n); });
+        }
         g.addEventListener('keydown', ev => { if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); act(); } });
         nLayer.appendChild(g); nodeEls[n.id] = { g, n, shape };
       });
@@ -333,7 +344,7 @@
       svg.fx = fxLayer;
       stage.innerHTML = ''; stage.appendChild(svg);
       fitLabels();
-      selected = null; defaultPanel(spec);
+      selected = null; defaultPanel(spec, top.fromNode);
       opts.onRender && opts.onRender(api, stack.length - 1);
     }
     /* shrink node labels that are wider than their shape (needs the svg in the DOM) */
@@ -381,9 +392,9 @@
     }
     async function dive(n, instant) {
       if (busy || !n.children) return;
-      if (instant || reduceMotion()) { stack.push({ spec: n.children, label: n.label || n.id, from: n.id }); render(); return; }
+      if (instant || reduceMotion()) { stack.push({ spec: n.children, label: n.label || n.id, from: n.id, fromNode: n }); render(); return; }
       busy = true;
-      try { await zoomInto(n); stack.push({ spec: n.children, label: n.label || n.id, from: n.id }); render(); stageAnim('dg-enter'); keepInView(); }
+      try { await zoomInto(n); stack.push({ spec: n.children, label: n.label || n.id, from: n.id, fromNode: n }); render(); stageAnim('dg-enter'); keepInView(); }
       finally { busy = false; }
     }
     async function back(k) {
