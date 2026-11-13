@@ -21,6 +21,8 @@
 הקשר ל-LLM → דרישות / חוזקות / חולשות → מה לבדוק כאלגוריתמאי AI → בוחן.
 
 ## הרצה
+**אתר חי (אחרי הפעלת GitHub Pages):** https://sashayoffe-pixel.github.io/LLM_Course/
+
 אין build ואין תלויות. פותחים את `index.html` בדפדפן (עובד גם מ-`file://` וגם בלי אינטרנט), או:
 ```bash
 python -m http.server 8000   # ואז http://localhost:8000
@@ -35,6 +37,6 @@ js/core.js            # router, דיאגרמות עם drill-down, stepper, quiz,
 js/modules/*.js       # מודול לכל נושא
 CONTRACT.md           # ה-API הפנימי וכללי התרומה
 ```
-התיקייה עצמאית לגמרי — אפשר להעתיק אותה כמו שהיא לריפוזיטורי נפרד.
+הפרויקט עצמאי לגמרי — HTML/CSS/JS בלבד, בלי תלויות.
 
 > מזהי המודלים בדוגמאות (`claude-haiku-5-5`, `claude-sonnet-5-5`, `claude-opus-5-5`) ומחירים — נכונים לנובמבר 2026; בדקו מחירון עדכני.
