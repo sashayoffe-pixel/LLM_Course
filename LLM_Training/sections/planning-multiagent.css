@@ -9,3 +9,4 @@
 .planning-multiagent-big { font-size: 26px; font-weight: 700; color: var(--accent); }
 .planning-multiagent-seq { font-family: ui-monospace, Menlo, monospace; font-size: 12px; white-space: pre-wrap; overflow-wrap: anywhere; background: var(--bg2); border: 1px solid var(--border); border-radius: 6px; padding: 8px; max-height: 340px; overflow: auto; }
 .planning-multiagent-seq .m-new { background: rgba(90,209,138,.16); }
+.planning-multiagent-f { white-space: normal; overflow-wrap: anywhere; }

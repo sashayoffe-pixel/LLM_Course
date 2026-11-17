@@ -62,7 +62,7 @@
               out.innerHTML = '';
               api.html(out, '<div class="inference-two"><div class="card"><div class="card-title">Prefill (' + api.fmtInt(L) + ' tokens)</div><div class="big-num">' + api.fmt(tPre * 1000, 0) + ' ms</div><div class="inference-note">2 × ' + api.fmtBig(P) + ' × ' + api.fmtInt(L) + ' ≈ ' + api.fmt(2 * P * L / 1e12, 1) + ' TFLOP ÷ ' + api.fmt(hw.flops / 1e12, 0) + ' TFLOP/s</div></div>' +
                 '<div class="card"><div class="card-title">Decode (per token)</div><div class="big-num">' + api.fmt(tTok * 1000, 1) + ' ms</div><div class="inference-note">read ' + api.fmtBytes(wBytes) + ' weights + ' + api.fmtBytes(api.ref.kvBytesPerToken * L) + ' KV cache ÷ ' + api.fmt(hw.bw / 1e12, 1) + ' TB/s → ≈ ' + api.fmt(1 / tTok, 0) + ' tok/s</div></div></div>');
-              api.html(out, '<div class="formula">total ≈ ' + api.fmt(tPre * 1000, 0) + ' ms + ' + N + ' × ' + api.fmt(tTok * 1000, 1) + ' ms = ' + api.fmt(tot, 2) + ' s</div>');
+              api.html(out, '<div class="formula inference-f">total ≈ ' + api.fmt(tPre * 1000, 0) + ' ms + ' + N + ' × ' + api.fmt(tTok * 1000, 1) + ' ms = ' + api.fmt(tot, 2) + ' s</div>');
               var pts = [], x;
               for (x = 0; x <= N; x += Math.max(1, Math.round(N / 20))) pts.push([x, (tPre + x * tTok) * 1000]);
               pts.push([N, tot * 1000]);
@@ -84,7 +84,7 @@
             function draw(n) {
               var flop = 2 * P * n, bytes = wBytes, ai = flop / bytes;
               out.innerHTML = '';
-              api.html(out, '<div class="formula">tokens processed together n = ' + api.fmtInt(n) + '\nFLOPs = 2 × params × n = ' + api.fmt(flop / 1e12, 2) + ' TFLOP\nbytes moved ≈ weights = ' + api.fmtBytes(bytes) + '\narithmetic intensity = FLOPs ÷ bytes = ' + api.fmt(ai, 0) + ' FLOP/byte\nGPU ridge point = ' + api.fmt(hw.flops / 1e12, 0) + ' TFLOP/s ÷ ' + api.fmt(hw.bw / 1e12, 1) + ' TB/s = ' + api.fmt(ridge, 0) + ' FLOP/byte</div>');
+              api.html(out, '<div class="formula inference-f">tokens processed together n = ' + api.fmtInt(n) + '\nFLOPs = 2 × params × n = ' + api.fmt(flop / 1e12, 2) + ' TFLOP\nbytes moved ≈ weights = ' + api.fmtBytes(bytes) + '\narithmetic intensity = FLOPs ÷ bytes = ' + api.fmt(ai, 0) + ' FLOP/byte\nGPU ridge point = ' + api.fmt(hw.flops / 1e12, 0) + ' TFLOP/s ÷ ' + api.fmt(hw.bw / 1e12, 1) + ' TB/s = ' + api.fmt(ridge, 0) + ' FLOP/byte</div>');
               api.callout(out, ai < ridge ? '<b>Memory-bound:</b> intensity ' + api.fmt(ai, 0) + ' is below the ridge (' + api.fmt(ridge, 0) + '): the GPU waits for weights to arrive; compute units are mostly idle.' : '<b>Compute-bound:</b> intensity ' + api.fmt(ai, 0) + ' exceeds the ridge: arithmetic is the bottleneck.', ai < ridge ? 'warn' : 'tip');
               api.bars(out, { title: 'Arithmetic intensity vs GPU ridge (FLOP/byte)', items: [{ label: 'this workload', value: ai, color: ai < ridge ? 'var(--warn)' : 'var(--good)' }, { label: 'GPU ridge', value: ridge, color: 'var(--muted)' }], max: Math.max(ai, ridge) * 1.05, format: function (v) { return api.fmt(v, 0); } });
             }
@@ -138,7 +138,7 @@
               { title: '× bytes per number', html: 'BF16 = 2 bytes: ' + api.fmtInt(2 * r.d_head * r.n_kv_heads * r.n_layers) + ' × 2 = <b>' + api.fmtInt(r.kvBytesPerToken) + ' bytes = ' + api.fmtBytes(r.kvBytesPerToken) + '</b> per token.' },
               { title: '× context length', html: 'An ' + api.fmtInt(r.context) + '-token context: ' + api.fmtBytes(r.kvBytesPerToken * r.context) + ' per sequence. The weights are ' + api.fmtBytes(r.paramBreakdown().bytesBF16) + '.' }
             ] });
-            api.html(el, '<div class="formula">kv_bytes_per_token = 2 × n_layers × n_kv_heads × d_head × bytes\n                   = 2 × ' + r.n_layers + ' × ' + r.n_kv_heads + ' × ' + r.d_head + ' × 2 = ' + api.fmtInt(r.kvBytesPerToken) + '</div>');
+            api.html(el, '<div class="formula inference-f">kv_bytes_per_token = 2 × n_layers × n_kv_heads × d_head × bytes\n                   = 2 × ' + r.n_layers + ' × ' + r.n_kv_heads + ' × ' + r.d_head + ' × 2 = ' + api.fmtInt(r.kvBytesPerToken) + '</div>');
           } },
           { name: 'Calculator', render: function (el, api) {
             var r = api.ref, ctx = 8192, batch = 1, kvh = 8, bytes = 2;
@@ -147,7 +147,7 @@
             function draw() {
               var kv = kvBytes(r, ctx, batch, kvh, bytes), per = kvBytes(r, 1, 1, kvh, bytes);
               out.innerHTML = '';
-              api.html(out, '<div class="formula">per token = 2 × ' + r.n_layers + ' × ' + kvh + ' × ' + r.d_head + ' × ' + bytes + ' B = ' + api.fmtBytes(per) + '\ntotal = ' + api.fmtBytes(per) + ' × ' + api.fmtInt(ctx) + ' tokens × ' + batch + ' sequences = <b>' + api.fmtBytes(kv) + '</b></div>');
+              api.html(out, '<div class="formula inference-f">per token = 2 × ' + r.n_layers + ' × ' + kvh + ' × ' + r.d_head + ' × ' + bytes + ' B = ' + api.fmtBytes(per) + '\ntotal = ' + api.fmtBytes(per) + ' × ' + api.fmtInt(ctx) + ' tokens × ' + batch + ' sequences = <b>' + api.fmtBytes(kv) + '</b></div>');
               api.bars(out, { title: 'GPU memory: weights vs KV cache (GB)', items: [
                 { label: 'Weights (BF16)', value: wGB / GB, color: 'var(--t-matrix)', note: 'fixed' },
                 { label: 'KV cache', value: kv / GB, color: kv > wGB ? 'var(--bad)' : 'var(--t-tensor)', highlight: kv > wGB }
@@ -168,7 +168,7 @@
               for (i = 0; i < N; i++) without += L + i + 1;
               without += 0; // each step reprocesses the full sequence
               out.innerHTML = '';
-              api.html(out, '<div class="formula">with cache:    prefill ' + api.fmtInt(L) + ' + ' + api.fmtInt(N) + ' decode steps × 1 token = ' + api.fmtInt(withC) + ' tokens processed\nwithout cache: Σ over steps of (current length) = ' + api.fmtInt(without) + ' tokens processed\nratio = ' + api.fmt(without / withC, 1) + '×   (≈ ' + api.fmt(2 * P * without / 1e15, 1) + ' vs ' + api.fmt(2 * P * withC / 1e15, 2) + ' PFLOP, ignoring attention cost)</div>');
+              api.html(out, '<div class="formula inference-f">with cache:    prefill ' + api.fmtInt(L) + ' + ' + api.fmtInt(N) + ' decode steps × 1 token = ' + api.fmtInt(withC) + ' tokens processed\nwithout cache: Σ over steps of (current length) = ' + api.fmtInt(without) + ' tokens processed\nratio = ' + api.fmt(without / withC, 1) + '×   (≈ ' + api.fmt(2 * P * without / 1e15, 1) + ' vs ' + api.fmt(2 * P * withC / 1e15, 2) + ' PFLOP, ignoring attention cost)</div>');
               api.bars(out, { title: 'Tokens pushed through the network', items: [{ label: 'With KV cache', value: withC, color: 'var(--good)' }, { label: 'Without cache', value: without, color: 'var(--bad)' }], max: without, format: api.fmtInt });
               var pts = [], n;
               for (n = 0; n <= N; n += Math.max(1, Math.round(N / 25))) { var s = 0, j; for (j = 0; j < n; j++) s += L + j + 1; pts.push([n, s]); }
@@ -285,7 +285,7 @@
               var overhead = group > 0 ? 16 / group : 0;      // one FP16 scale per group
               var eff = bits + (bits < 16 ? overhead : 0), wb = P * eff / 8, kv = api.ref.kvBytesPerToken * ctx, tot = wb + kv;
               out.innerHTML = '';
-              api.html(out, '<div class="formula">memory = params × (bits + scale overhead) / 8\n       = ' + api.fmtBig(P) + ' × (' + bits + ' + ' + api.fmt(bits < 16 ? overhead : 0, 3) + ') / 8 = <b>' + api.fmtBytes(wb) + '</b>\nplus KV cache for ' + api.fmtInt(ctx) + ' tokens (BF16): ' + api.fmtBytes(kv) + '   →   total ≈ ' + api.fmtBytes(tot) + '</div>');
+              api.html(out, '<div class="formula inference-f">memory = params × (bits + scale overhead) / 8\n       = ' + api.fmtBig(P) + ' × (' + bits + ' + ' + api.fmt(bits < 16 ? overhead : 0, 3) + ') / 8 = <b>' + api.fmtBytes(wb) + '</b>\nplus KV cache for ' + api.fmtInt(ctx) + ' tokens (BF16): ' + api.fmtBytes(kv) + '   →   total ≈ ' + api.fmtBytes(tot) + '</div>');
               api.bars(out, { title: 'Total vs GPU memory (GB)', items: [{ label: 'weights', value: wb / GB, color: 'var(--t-matrix)' }, { label: 'KV cache', value: kv / GB, color: 'var(--t-tensor)' }, { label: 'GPU ' + gpu + ' GB', value: gpu, color: tot / GB <= gpu ? 'var(--good)' : 'var(--bad)' }], max: Math.max(gpu, tot / GB) * 1.05, format: function (v) { return api.fmt(v, 1) + ' GB'; } });
               api.callout(out, tot / GB <= gpu ? 'Fits in ' + gpu + ' GB (before activations/runtime overhead, which also need some memory).' : 'Does <b>not</b> fit in ' + gpu + ' GB.', tot / GB <= gpu ? 'tip' : 'warn');
             }
@@ -303,7 +303,7 @@
               var q = w.map(function (v) { return Math.round(v / scale); }), dq = q.map(function (v) { return v * scale; });
               var err = w.map(function (v, i) { return dq[i] - v; }), mae = api.math.sum(err.map(Math.abs)) / w.length;
               out.innerHTML = '';
-              api.html(out, '<div class="formula">scale = max|w| / ' + qmax + ' = ' + api.fmt(mx, 3) + ' / ' + qmax + ' = ' + api.fmt(scale, 5) + '\nq = round(w / scale)      ŵ = q × scale      error = ŵ − w</div>');
+              api.html(out, '<div class="formula inference-f">scale = max|w| / ' + qmax + ' = ' + api.fmt(mx, 3) + ' / ' + qmax + ' = ' + api.fmt(scale, 5) + '\nq = round(w / scale)      ŵ = q × scale      error = ŵ − w</div>');
               api.table(out, { headers: ['i', 'w ' + api.type('float'), 'w / scale', 'q ' + api.type('integer'), 'ŵ = q·scale', 'error'], rows: w.map(function (v, i) { return [i, api.fmt(v, 3), api.fmt(v / scale, 2), q[i], api.fmt(dq[i], 4), api.fmt(err[i], 4)]; }) });
               api.html(out, '<div class="inference-note">Mean absolute error = <b>' + api.fmt(mae, 5) + '</b> (' + api.fmt(100 * mae / (api.math.sum(w.map(Math.abs)) / w.length), 2) + '% of mean |w|). Storage: ' + bits + ' bits per weight + one shared scale instead of 16 bits per weight.</div>');
             }
@@ -388,7 +388,7 @@
             function draw() {
               var e = exp(alpha, k), sp = speed(alpha, k, cost);
               out.innerHTML = '';
-              api.html(out, '<div class="formula">E[tokens per target pass] = (1 − α^(k+1)) / (1 − α) = (1 − ' + api.fmt(alpha, 2) + '^' + (k + 1) + ') / (1 − ' + api.fmt(alpha, 2) + ') = <b>' + api.fmt(e, 2) + '</b>\ncost per round ≈ 1 target pass + k × c draft passes = 1 + ' + k + ' × ' + api.fmt(cost, 2) + ' = ' + api.fmt(1 + k * cost, 2) + '  (c = draft cost relative to target)\nspeedup ≈ ' + api.fmt(e, 2) + ' / ' + api.fmt(1 + k * cost, 2) + ' = <b>' + api.fmt(sp, 2) + '×</b></div>');
+              api.html(out, '<div class="formula inference-f">E[tokens per target pass] = (1 − α^(k+1)) / (1 − α) = (1 − ' + api.fmt(alpha, 2) + '^' + (k + 1) + ') / (1 − ' + api.fmt(alpha, 2) + ') = <b>' + api.fmt(e, 2) + '</b>\ncost per round ≈ 1 target pass + k × c draft passes = 1 + ' + k + ' × ' + api.fmt(cost, 2) + ' = ' + api.fmt(1 + k * cost, 2) + '  (c = draft cost relative to target)\nspeedup ≈ ' + api.fmt(e, 2) + ' / ' + api.fmt(1 + k * cost, 2) + ' = <b>' + api.fmt(sp, 2) + '×</b></div>');
               var pts = []; for (var kk = 1; kk <= 10; kk++) pts.push([kk, speed(alpha, kk, cost)]);
               var ser = [{ name: 'speedup vs k (α = ' + api.fmt(alpha, 2) + ')', points: pts, color: '#5ad18a' }];
               if (ch) ch.update({ series: ser, markers: [{ x: k, label: 'k = ' + k }] }); else ch = api.chart(chartBox, { series: ser, xLabel: 'draft tokens per round k', yLabel: 'speedup ×', height: 220, markers: [{ x: k, label: 'k = ' + k }] });

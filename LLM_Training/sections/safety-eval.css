@@ -16,3 +16,4 @@
 .safety-eval-seq { display: flex; flex-wrap: wrap; gap: 4px; margin: 8px 0; }
 .safety-eval-seq span { border-radius: 4px; padding: 3px 7px; font-size: 12px; font-family: ui-monospace, Menlo, monospace; border: 1px solid var(--border); overflow-wrap: anywhere; }
 .safety-eval-pick { cursor: pointer; }
+.safety-eval-f { white-space: normal; overflow-wrap: anywhere; }

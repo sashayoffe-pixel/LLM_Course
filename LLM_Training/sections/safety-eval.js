@@ -52,7 +52,7 @@
             }
             function draw() {
               var r = Math.pow(st.p / 100, st.n);
-              out.querySelector('.safety-eval-res').innerHTML = '<div class="formula">p<sup>n</sup> = ' + api.fmt(st.p / 100, 2) + '<sup>' + st.n + '</sup> = <b>' + api.fmt(r * 100, 1) + '%</b> chance the whole run succeeds</div>' +
+              out.querySelector('.safety-eval-res').innerHTML = '<div class="formula safety-eval-f">p<sup>n</sup> = ' + api.fmt(st.p / 100, 2) + '<sup>' + st.n + '</sup> = <b>' + api.fmt(r * 100, 1) + '%</b> chance the whole run succeeds</div>' +
                 '<p>Steps until success chance falls below 50%: <b>' + (st.p >= 100 ? '∞' : api.fmt(Math.log(0.5) / Math.log(st.p / 100), 1)) + '</b></p>';
               ch.update({ series: series(), markers: [{ x: st.n, label: 'n = ' + st.n }] });
             }
@@ -71,7 +71,7 @@
               var p = st.p / 100, d = st.d / 100;
               var pe = p + (1 - p) * d * p;
               var a = Math.pow(p, st.n), b = Math.pow(pe, st.n);
-              api.html(out, '<div class="formula">p_eff = p + (1−p)·d·p = ' + api.fmt(p, 2) + ' + ' + api.fmt(1 - p, 2) + ' × ' + api.fmt(d, 2) + ' × ' + api.fmt(p, 2) + ' = <b>' + api.fmt(pe, 3) + '</b></div>');
+              api.html(out, '<div class="formula safety-eval-f">p_eff = p + (1−p)·d·p = ' + api.fmt(p, 2) + ' + ' + api.fmt(1 - p, 2) + ' × ' + api.fmt(d, 2) + ' × ' + api.fmt(p, 2) + ' = <b>' + api.fmt(pe, 3) + '</b></div>');
               var g = api.h('div', { class: 'safety-eval-cmp' }); out.appendChild(g);
               api.card(g, 'No verification', '<div class="safety-eval-big">' + api.fmt(a * 100, 1) + '%</div>' + api.fmt(p, 2) + '^' + st.n);
               api.card(g, 'Verify + one retry', '<div class="safety-eval-big">' + api.fmt(b * 100, 1) + '%</div>' + api.fmt(pe, 3) + '^' + st.n);
@@ -153,7 +153,7 @@
               out.innerHTML = '';
               var risk = 1, parts = [];
               M.forEach(function (m) { if (on[m.k]) { risk *= (1 - m.r / 100); parts.push('(1 − ' + api.fmt(m.r / 100, 2) + ')'); } });
-              api.html(out, '<div class="formula">residual ≈ ' + (parts.length ? parts.join(' × ') : '1') + ' = <b>' + api.fmt(risk * 100, 0) + '%</b> of baseline attack success</div>');
+              api.html(out, '<div class="formula safety-eval-f">residual ≈ ' + (parts.length ? parts.join(' × ') : '1') + ' = <b>' + api.fmt(risk * 100, 0) + '%</b> of baseline attack success</div>');
               api.bars(out, { items: [{ label: 'baseline', value: 100, color: '#ff5d73' }, { label: 'with layers', value: risk * 100, color: '#5ad18a' }], max: 100, format: function (v) { return api.fmt(v, 0) + '%'; } });
               api.callout(out, 'These percentages are <b>invented</b> to show how layers combine; real layers overlap (not independent) and attackers adapt. No combination makes an agent injection-proof.', 'hedge');
             }
@@ -291,7 +291,7 @@
               out.innerHTML = '';
               var cc = Math.min(st.c, st.n), kk = Math.min(st.k, st.n);
               var p = cc / st.n, pk = passAtK(st.n, cc, kk), allk = Math.pow(p, kk);
-              api.html(out, '<div class="formula">single-run success ĉ/n = ' + cc + ' / ' + st.n + ' = <b>' + api.fmt(p, 2) + '</b><br>pass@' + kk + ' = 1 − C(n−c, k) / C(n, k) = <b>' + api.fmt(pk, 3) + '</b><br>pass^' + kk + ' ≈ (c/n)^k = <b>' + api.fmt(allk, 3) + '</b></div>');
+              api.html(out, '<div class="formula safety-eval-f">single-run success ĉ/n = ' + cc + ' / ' + st.n + ' = <b>' + api.fmt(p, 2) + '</b><br>pass@' + kk + ' = 1 − C(n−c, k) / C(n, k) = <b>' + api.fmt(pk, 3) + '</b><br>pass^' + kk + ' ≈ (c/n)^k = <b>' + api.fmt(allk, 3) + '</b></div>');
               var items = []; for (var i = 1; i <= Math.min(st.n, 10); i++) items.push({ label: 'k = ' + i, value: passAtK(st.n, cc, i), color: i === kk ? '#4ea8ff' : '' });
               api.bars(out, { items: items, max: 1, format: function (v) { return api.fmt(v, 3); }, title: 'pass@k as k grows ' + api.badge('probability', '[k]') });
               api.html(out, '<p><b>pass@k</b> asks "does any of k attempts succeed?" (fine if a human picks the best). <b>pass^k</b> asks "do all k succeed?" (what an unattended agent needs). Same agent, very different numbers.</p>');

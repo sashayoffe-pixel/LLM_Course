@@ -11,3 +11,4 @@
 .inference-ctxbar { display:flex; height:28px; border:1px solid var(--border); border-radius:6px; overflow:hidden; background:var(--panel2); }
 .inference-ctxbar span { display:block; height:100%; font-size:11px; line-height:28px; text-align:center; overflow:hidden; white-space:nowrap; }
 .inference-two { display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:12px; }
+.inference-f { white-space:pre-wrap; overflow-wrap:anywhere; }

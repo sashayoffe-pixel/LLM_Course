@@ -160,7 +160,7 @@
               }
               var expected = 0; for (var j = 1; j <= st.max; j++) expected += (j < st.max ? Math.pow(1 - p, j - 1) * p * j : Math.pow(1 - p, j - 1) * j);
               api.table(out, { headers: ['Round', 'Accepted exactly here', 'Cumulative accepted', 'Model calls so far (generate + evaluate)'], rows: rows });
-              api.html(out, '<div class="formula">E[rounds] = Σ rounds × P = <b>' + api.fmt(expected, 2) + '</b> (capped at ' + st.max + ') → ≈ ' + api.fmt(2 * expected, 1) + ' model calls</div>');
+              api.html(out, '<div class="formula planning-multiagent-f">E[rounds] = Σ rounds × P = <b>' + api.fmt(expected, 2) + '</b> (capped at ' + st.max + ') → ≈ ' + api.fmt(2 * expected, 1) + ' model calls</div>');
               api.callout(out, 'This assumes each round is an independent chance <i>p</i> of passing the evaluator. In practice, rounds are correlated and the evaluator itself can be wrong or biased, so treat this as a budgeting sketch.', 'hedge');
             }
             api.slider(c, { label: 'P(accept per round)', min: 10, max: 95, step: 5, value: st.p, format: function (v) { return v + '%'; }, onInput: function (v) { st.p = v; draw(); }, init: false });
@@ -215,7 +215,7 @@
               api.card(g2, st.n + ' workers + orchestrator', '<div class="planning-multiagent-big">' + api.fmtInt(multi) + '</div>workers ' + api.fmtInt(workers) + ' + orchestrator ' + api.fmtInt(orch));
               api.card(g2, 'Multiplier', '<div class="planning-multiagent-big">' + api.fmt(multi / single, 2) + '×</div>multi ÷ single');
               api.bars(out, { items: [{ label: 'single', value: single, color: '#4ea8ff' }, { label: 'multi', value: multi, color: '#ff9a4d' }], format: function (v) { return api.fmtInt(v); } });
-              api.html(out, '<div class="formula">input tokens ≈ Σ per call (context size) = turns × C₀ + g × turns × (turns−1) / 2</div>');
+              api.html(out, '<div class="formula planning-multiagent-f">input tokens ≈ Σ per call (context size) = turns × C₀ + g × turns × (turns−1) / 2</div>');
               api.callout(out, multi > single ? 'Here the multi-agent setup uses more input tokens. Shrinking the shared base context C₀ or lengthening each worker\'s run changes that: try it.' : 'Here splitting wins on input tokens because each worker\'s context stays short, while one long agent re-reads an ever-growing history. This ignores output tokens, caching, retries and quality differences.', 'hedge');
             }
             api.slider(c, { label: 'Agents N', min: 1, max: 10, value: st.n, format: function (v) { return v; }, onInput: function (v) { st.n = v; draw(); }, init: false });

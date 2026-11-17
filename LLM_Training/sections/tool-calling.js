@@ -235,7 +235,8 @@
               api.stepper(stepHost, { steps: steps, interval: 2400, onStep: function (i) { svgHost.innerHTML = seqSvg(api, m, i); } });
               api.html(body, '<p class="muted">Model calls: <b>' + m.filter(function (x) { return x.from === 1 && x.to === 2; }).length + '</b> (each one re-sends the whole conversation so far).</p>');
             }
-            api.select(c, { label: 'Tool calls', options: [{ value: 'parallel', label: 'Parallel (one turn)' }, { value: 'sequential', label: 'Sequential (two turns)' }], value: 'parallel', onChange: function (v) { st.mode = v; build(); } });
+            api.select(c, { label: 'Tool calls', options: [{ value: 'parallel', label: 'Parallel (one turn)' }, { value: 'sequential', label: 'Sequential (two turns)' }], value: 'parallel', onChange: function (v) { st.mode = v; build(); }, init: false });
+            build();
           } },
           { name: 'Matching IDs', render: function (el, api) {
             api.docsNote(el, ' Provider-neutral sketch.');
@@ -415,7 +416,7 @@
               api.callout(out, 'Next: ' + k.next, k.msg ? 'warn' : 'tip');
             }
             api.select(c, { label: 'Scenario', options: [{ value: 'badarg', label: 'Bad argument' }, { value: 'notfound', label: 'Unknown id' }, { value: 'timeout', label: 'Timeout' }, { value: 'ok', label: 'Success' }], value: 'badarg', onChange: draw });
-            el.appendChild(out);
+            el.appendChild(out); draw('badarg');
             api.html(el, '<p class="muted">Harness side: wrap every tool in try/except and convert exceptions to <code>is_error</code> results; count retries against the budget (' + api.link('llm-to-agent/stop-conditions', 'stop conditions') + ').</p>');
           } },
           { name: 'Good vs bad', render: function (el, api) {

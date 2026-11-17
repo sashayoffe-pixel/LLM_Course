@@ -6,3 +6,5 @@
 .output-sampling-state { display:flex; flex-wrap:wrap; gap:6px; align-items:center; font-family:monospace; margin:6px 0; }
 .output-sampling-ok { color:var(--good); } .output-sampling-no { color:var(--bad); }
 .output-sampling-row2 { display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:12px; }
+.output-sampling-mxbox { max-width:100%; overflow:hidden; } .output-sampling-mxbox .mx-wrap { display:block; margin-right:0; }
+.output-sampling-f { white-space:pre-wrap; overflow-wrap:anywhere; }

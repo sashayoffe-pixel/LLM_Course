@@ -27,3 +27,5 @@
 .ctl-input, .ctl-input input { max-width: 100%; box-sizing: border-box; }
 .ctl-select { max-width: 100%; }
 .ctl-select select { width: 100%; box-sizing: border-box; }
+.memory-rag-f { white-space: normal; overflow-wrap: anywhere; }
+.memory-rag-vw .mx-wrap { display: block; margin-right: 0; }

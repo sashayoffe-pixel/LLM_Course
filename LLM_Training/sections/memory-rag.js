@@ -199,7 +199,7 @@
               gauge(out, [{ name: 'system', v: sys, cls: 'memory-rag-seg-sys' }, { name: 'tool schemas', v: tools, cls: 'memory-rag-seg-tools' }, { name: st.turns + ' turns', v: turnsTok, cls: 'memory-rag-seg-turns' }], st.win, api, trig * 100);
               api.html(out, '<b>After compaction</b> ' + (needs ? '' : '<span class="muted">(not triggered: below ' + api.fmt(trig * 100, 0) + '% of the window)</span>'));
               gauge(out, [{ name: 'system', v: sys, cls: 'memory-rag-seg-sys' }, { name: 'tool schemas', v: tools, cls: 'memory-rag-seg-tools' }, { name: 'summary', v: summary, cls: 'memory-rag-seg-sum' }, { name: keep + ' recent turns', v: needs ? keep * st.per : turnsTok, cls: 'memory-rag-seg-turns' }], st.win, api);
-              api.html(out, '<div class="formula">after = system + tools + summary + recent = ' + api.fmtInt(sys) + ' + ' + api.fmtInt(tools) + ' + ' + api.fmtInt(summary) + ' + ' + api.fmtInt(needs ? keep * st.per : turnsTok) + ' = <b>' + api.fmtInt(after) + '</b> tokens (was ' + api.fmtInt(before) + ')</div>');
+              api.html(out, '<div class="formula memory-rag-f">after = system + tools + summary + recent = ' + api.fmtInt(sys) + ' + ' + api.fmtInt(tools) + ' + ' + api.fmtInt(summary) + ' + ' + api.fmtInt(needs ? keep * st.per : turnsTok) + ' = <b>' + api.fmtInt(after) + '</b> tokens (was ' + api.fmtInt(before) + ')</div>');
               if (before > st.win) api.callout(out, 'Without compaction this request would <b>exceed the window</b> and fail or be truncated.', 'warn');
               api.illustrative(out, 'System/tool sizes, tokens per turn and the summary ratio are assumptions; real summaries vary.');
             }
@@ -296,7 +296,7 @@
             api.table(el, { headers: ['feature', 'query q [d_emb]', 'chunk c [d_emb]', 'q·c term'],
               rows: idx.map(function (i) { return [VOCAB[i], api.fmt(qv[i], 2), api.fmt(dv[i], 2), api.fmt(qv[i] * dv[i], 3)]; }).concat([['<i>other dims</i>', '…', '…', '…']]) });
             var dot = api.math.dot(qv, dv), nq = api.math.norm(qv), nd = api.math.norm(dv);
-            api.html(el, '<div class="formula">cos(q, c) = (q · c) / (‖q‖ · ‖c‖) = ' + api.fmt(dot, 3) + ' / (' + api.fmt(nq, 3) + ' × ' + api.fmt(nd, 3) + ') = <b>' + api.fmt(dot / (nq * nd), 3) + '</b></div>');
+            api.html(el, '<div class="formula memory-rag-f">cos(q, c) = (q · c) / (‖q‖ · ‖c‖) = ' + api.fmt(dot, 3) + ' / (' + api.fmt(nq, 3) + ' × ' + api.fmt(nd, 3) + ') = <b>' + api.fmt(dot / (nq * nd), 3) + '</b></div>');
             api.html(el, '<p>' + api.badge('float', 'scalar') + ' Repeat for all ' + DOCS.length + ' chunks, sort descending, keep the first <i>k</i> ' + api.badge('integer', '[k]') + '. Many vector DBs normalise vectors so that cosine is just a dot product.</p>');
             api.html(el, '<p class="muted">Compare with ' + api.link('embeddings/cosine', 'cosine step by step') + '. Try your own question in the ' + api.link('memory-rag/mini-rag', 'mini-RAG playground') + '.</p>');
           } }
@@ -355,12 +355,12 @@
               var cols = []; VOCAB.forEach(function (_, i) { if (qv[i] > 0 || dv[i] > 0) cols.push(i); });
               if (!cols.length) { api.callout(out, 'Query has no known words.', 'hedge'); return; }
               api.matrix(out, { data: [cols.map(function (i) { return qv[i]; }), cols.map(function (i) { return dv[i]; })], rowLabels: ['query', 'doc ' + st.doc], colLabels: cols.map(function (i) { return VOCAB[i]; }), decimals: 2, title: 'Non-zero dims only', type: 'vector', shape: '[2 × ' + cols.length + ' of ' + VOCAB.length + ']' });
-              api.html(out, '<div class="formula">cos = ' + api.fmt(api.math.dot(qv, dv), 3) + ' / (' + api.fmt(api.math.norm(qv), 3) + ' × ' + api.fmt(api.math.norm(dv), 3) + ') = <b>' + api.fmt(api.math.cosine(qv, dv), 3) + '</b></div>');
+              api.html(out, '<div class="formula memory-rag-f">cos = ' + api.fmt(api.math.dot(qv, dv), 3) + ' / (' + api.fmt(api.math.norm(qv), 3) + ' × ' + api.fmt(api.math.norm(dv), 3) + ') = <b>' + api.fmt(api.math.cosine(qv, dv), 3) + '</b></div>');
               api.html(out, '<p class="muted">Features starting with <code>c:</code> are hand-made concept groups (e.g. throttle ≈ limit ≈ 429) that stand in for what a learned embedding captures automatically.</p>');
             }
             api.input(c, { label: 'Question', value: st.q, onInput: function (v) { st.q = v; draw(); }, init: false });
             api.select(c, { label: 'Compare with', options: DOCS.map(function (d, i) { return { value: i, label: '#' + i + ' ' + d.slice(0, 16) + '…' }; }), value: st.doc, onChange: function (v) { st.doc = +v; draw(); } });
-            el.appendChild(c); el.appendChild(out); draw();
+            out.className = 'memory-rag-vw'; el.appendChild(c); el.appendChild(out); draw();
           } }
         ]
       },

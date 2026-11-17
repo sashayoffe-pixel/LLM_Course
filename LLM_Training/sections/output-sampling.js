@@ -81,7 +81,8 @@
             var M = api.math, lg = candLogits(api), p = M.softmax(lg), ord = order(lg);
             api.html(el, '<div class="output-sampling-note">A tiny model: h has 4 numbers (not 4096) and we show 12 candidate columns of W_U (not 128,256). Each logit is a dot product h · column.</div>');
             api.matrix(el, { data: [H], title: 'h', type: 'vector', shape: '[4]', small: true, scale: 'diverging' });
-            api.matrix(el, { data: M.transpose(CANDS.map(function (c) { return c.w; })), title: 'W_U (12 candidate columns)', type: 'matrix', shape: '[4 × 12]', colLabels: CANDS.map(function (c) { return api.tokText(c.t); }), small: true, scale: 'diverging' });
+            var mxb = api.h('div', { class: 'output-sampling-mxbox' }); el.appendChild(mxb);
+            api.matrix(mxb, { data: M.transpose(CANDS.map(function (c) { return c.w; })), title: 'W_U (12 candidate columns)', type: 'matrix', shape: '[4 × 12]', colLabels: CANDS.map(function (c) { return api.tokText(c.t); }), small: true, scale: 'diverging' });
             api.table(el, { headers: ['Token', 'logit = h · column', 'probability'], rows: ord.map(function (i) {
               return [api.tok(CANDS[i].t), api.fmt(lg[i], 2), pct(api, p[i])]; }) });
             api.illustrative(el, 'Hand-picked vectors so that ' + api.tok(' mat') + ' wins; real logits are computed over the whole vocabulary.');
@@ -89,7 +90,7 @@
           { name: 'Softmax', render: function (el, api) {
             var M = api.math, lg = candLogits(api), p = M.softmax(lg), mx = M.max(lg);
             var e = lg.map(function (v) { return Math.exp(v - mx); }), s = M.sum(e), ord = order(lg).slice(0, 6);
-            api.html(el, '<div class="formula">pᵢ = exp(logitᵢ − max) / Σⱼ exp(logitⱼ − max)     (subtracting the max keeps numbers stable)</div>');
+            api.html(el, '<div class="formula output-sampling-f">pᵢ = exp(logitᵢ − max) / Σⱼ exp(logitⱼ − max)     (subtracting the max keeps numbers stable)</div>');
             api.table(el, { headers: ['Token', 'logit', 'logit − max', 'exp(·)', 'p = exp / ' + api.fmt(s, 3)], rows: ord.map(function (i) {
               return [api.tok(CANDS[i].t), api.fmt(lg[i], 2), api.fmt(lg[i] - mx, 2), api.fmt(e[i], 3), api.fmt(p[i], 3)]; }) });
             api.bars(el, { title: 'Probabilities (12 candidates, sum = ' + api.fmt(M.sum(p), 3) + ')', max: 1, items: order(p).map(function (i) { return { label: api.tokText(CANDS[i].t), value: p[i], highlight: i === 0 }; }), format: function (v) { return pct(api, v); } });
@@ -166,14 +167,14 @@
             api.stepper(el, { steps: [
               { title: 'Raw logits', render: function (b) { api.bars(b, { items: ord.slice(0, 8).map(function (i) { return { label: api.tokText(CANDS[i].t), value: lg[i] }; }), format: function (v) { return api.fmt(v, 2); } }); } },
               { title: 'Divide by temperature, softmax', render: function (b) {
-                api.html(b, '<div class="formula">pᵢ = softmax(logitᵢ / T), T = ' + T + '</div>');
+                api.html(b, '<div class="formula output-sampling-f">pᵢ = softmax(logitᵢ / T), T = ' + T + '</div>');
                 api.bars(b, { max: 1, items: ord.slice(0, 8).map(function (i) { return { label: api.tokText(CANDS[i].t), value: d.p[i], note: 'T=1: ' + pct(api, p1[i]) }; }), format: function (v) { return pct(api, v); } });
               } },
               { title: 'Top-k filter (keep ' + K + ')', render: function (b) {
                 api.bars(b, { max: 1, items: ord.slice(0, 8).map(function (i, r) { return { label: api.tokText(CANDS[i].t), value: d.p[i], dim: r >= K, note: r >= K ? 'removed' : '' }; }), format: function (v) { return pct(api, v); } });
               } },
               { title: 'Renormalise the survivors', render: function (b) {
-                api.html(b, '<div class="formula">p′ᵢ = pᵢ / ' + api.fmt(s, 3) + '  (sum of kept)</div>');
+                api.html(b, '<div class="formula output-sampling-f">p′ᵢ = pᵢ / ' + api.fmt(s, 3) + '  (sum of kept)</div>');
                 api.bars(b, { max: 1, items: kk.map(function (i) { return { label: api.tokText(CANDS[i].t), value: d.p[i] / s }; }), format: function (v) { return pct(api, v); } });
               } },
               { title: 'Top-p filter (cumulative ≥ ' + P + ')', render: function (b) {
@@ -299,7 +300,7 @@
             var rows = seq.map(function (s) { var lp = Math.log(s[1]); tot += lp; return [api.tok(s[0]), api.fmt(s[1], 2), api.fmt(lp, 3), api.fmt(-lp / Math.LN2, 2) + ' bits']; });
             api.table(el, { headers: ['Chosen token', 'probability', 'logprob = ln p', 'surprise'], rows: rows });
             var mean = tot / seq.length;
-            api.html(el, '<div class="formula">sequence logprob = Σ ln pᵢ = ' + api.fmt(tot, 3) + '   →   joint probability = exp(' + api.fmt(tot, 3) + ') = ' + api.fmt(Math.exp(tot), 4) + '\nmean logprob = ' + api.fmt(mean, 3) + '   →   perplexity = exp(−mean) = ' + api.fmt(Math.exp(-mean), 2) + '</div>');
+            api.html(el, '<div class="formula output-sampling-f">sequence logprob = Σ ln pᵢ = ' + api.fmt(tot, 3) + '   →   joint probability = exp(' + api.fmt(tot, 3) + ') = ' + api.fmt(Math.exp(tot), 4) + '\nmean logprob = ' + api.fmt(mean, 3) + '   →   perplexity = exp(−mean) = ' + api.fmt(Math.exp(-mean), 2) + '</div>');
             api.callout(el, 'Low-probability tokens (large negative logprob) mark spots where the model was unsure — a rough but imperfect hint for hallucination detection or classification confidence. Logprobs measure <i>token</i> likelihood, not factual truth.', 'hedge');
             api.illustrative(el, 'Probabilities of the chosen tokens are invented. Cross-entropy training loss is the same idea (' + api.link('training/cross-entropy', 'cross-entropy') + ').');
           } },
@@ -322,7 +323,7 @@
               var l = api.h('div'), r = api.h('div'); g.appendChild(l); g.appendChild(r);
               api.bars(l, { title: 'Before penalties', max: 0.5, items: toks.map(function (t, i) { return { label: api.tokText(t), value: p0[i], note: 'seen ×' + cnt[i] }; }), format: function (v) { return pct(api, v); } });
               api.bars(r, { title: 'After penalties', max: 0.5, items: toks.map(function (t, i) { return { label: api.tokText(t), value: p1[i], color: cnt[i] ? 'var(--warn)' : 'var(--good)' }; }), format: function (v) { return pct(api, v); } });
-              api.html(out, '<div class="formula">logit′ = (logit / rep  if logit>0 else logit × rep) − frequency × count − presence × [count>0]\n e.g. " the": ' + api.fmt(base[0], 2) + ' → ' + api.fmt(adj[0], 2) + '</div>');
+              api.html(out, '<div class="formula output-sampling-f">logit′ = (logit / rep  if logit>0 else logit × rep) − frequency × count − presence × [count>0]\n e.g. " the": ' + api.fmt(base[0], 2) + ' → ' + api.fmt(adj[0], 2) + '</div>');
             }
             api.slider(c, { label: 'Repetition (×)', min: 1, max: 2, step: 0.05, value: 1, format: function (v) { return api.fmt(v, 2); }, onInput: function (v) { rep = v; draw(); } });
             api.slider(c, { label: 'Frequency', min: 0, max: 1.5, step: 0.05, value: 0, format: function (v) { return api.fmt(v, 2); }, onInput: function (v) { fq = v; draw(); } });

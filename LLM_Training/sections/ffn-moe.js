@@ -118,7 +118,7 @@
               ['<b>FFN per layer</b>', '', '<b>' + api.fmtInt(b.ffn) + '</b>'],
               ['× ' + r.n_layers + ' layers', '', '<b>' + api.fmtBig(b.ffn * r.n_layers) + '</b> (' + api.fmt(100 * b.ffn * r.n_layers / b.total, 0) + '% of ' + api.fmtBig(b.total) + ')']
             ] });
-            api.html(el, '<div class="formula">FLOPs per token per layer ≈ 2 × 3 × d_model × d_ff = 2 × 3 × ' + api.fmtInt(r.d_model) + ' × ' + api.fmtInt(r.d_ff) + ' ≈ ' + api.fmtBig(6 * r.d_model * r.d_ff) + '</div>');
+            api.html(el, '<div class="formula ffn-moe-f">FLOPs per token per layer ≈ 2 × 3 × d_model × d_ff = 2 × 3 × ' + api.fmtInt(r.d_model) + ' × ' + api.fmtInt(r.d_ff) + ' ≈ ' + api.fmtBig(6 * r.d_model * r.d_ff) + '</div>');
             api.html(el, '<div class="ffn-moe-note">The expansion ratio is d_ff / d_model = ' + api.fmt(r.d_ff / r.d_model, 2) + ' (classic transformers used 4×; SwiGLU models shrink it to keep parameter count comparable with three matrices instead of two). Total parameters: see ' + api.link('transformer-block/param-count', 'param count') + '.</div>');
           } }
         ]
@@ -369,7 +369,7 @@
               vecRow(api, out, 'router logits = x · W_r', logits, 'vector', '[8]', 2);
               api.bars(out, { title: 'softmax(logits)  — top-' + k + ' highlighted', max: 1, items: p.map(function (v, i) { return { label: EXPERT_NAMES[i], value: v, highlight: top.indexOf(i) >= 0, dim: top.indexOf(i) < 0 }; }), format: function (v) { return api.fmt(v, 3); } });
               api.bars(out, { title: 'Renormalised gate weights over chosen experts (sum = 1)', max: 1, items: top.map(function (i) { return { label: EXPERT_NAMES[i], value: g[i], color: 'var(--good)' }; }), format: function (v) { return api.fmt(v, 3); } });
-              api.html(out, '<div class="formula">y = ' + top.map(function (i) { return api.fmt(g[i], 2) + '·' + EXPERT_NAMES[i] + '(x)'; }).join(' + ') + '</div>');
+              api.html(out, '<div class="formula ffn-moe-f">y = ' + top.map(function (i) { return api.fmt(g[i], 2) + '·' + EXPERT_NAMES[i] + '(x)'; }).join(' + ') + '</div>');
               api.html(out, '<div class="ffn-moe-note">Experts used: ' + top.map(function (i) { return api.type('integer', String(i)); }).join(' ') + ' — computed for this token only; the other ' + (E - k) + ' experts do no work for it.</div>');
             }
             draw();
@@ -392,7 +392,7 @@
               var aux = E * M.sum(f.map(function (fi, i) { return fi * P[i]; }));
               out.innerHTML = '';
               api.bars(out, { title: 'Share of routing slots per expert (' + api.fmtInt(N) + ' tokens × top-2; ideal = 12.5%)', max: 0.5, items: f.map(function (v, i) { return { label: EXPERT_NAMES[i], value: v, color: v > 0.2 ? 'var(--bad)' : v < 0.06 ? 'var(--warn)' : 'var(--good)' }; }), format: function (v) { return api.fmt(100 * v, 1) + '%'; } });
-              api.html(out, '<div class="formula">aux loss = E · Σ fᵢ·Pᵢ = ' + api.fmt(aux, 3) + '   (1.0 when perfectly balanced; larger = more imbalanced)</div>');
+              api.html(out, '<div class="formula ffn-moe-f">aux loss = E · Σ fᵢ·Pᵢ = ' + api.fmt(aux, 3) + '   (1.0 when perfectly balanced; larger = more imbalanced)</div>');
               api.html(out, '<div class="ffn-moe-note">fᵢ = fraction of tokens routed to expert i, Pᵢ = mean router probability. Minimising this auxiliary loss pushes the router to spread load. Overloaded experts become bottlenecks and, if capacity-limited, drop tokens. Some newer designs use bias-based balancing instead of an aux loss.</div>');
             }
             api.slider(c, { label: 'Router skew', min: 0, max: 3, step: 0.1, value: 1.2, format: function (v) { return api.fmt(v, 1); }, onInput: draw });
@@ -411,7 +411,7 @@
                 { label: 'MoE total (' + E + ' experts)', value: total, color: 'var(--accent)', note: api.fmtBig(total) },
                 { label: 'MoE active / token (k=' + k + ')', value: active, color: 'var(--good)', note: api.fmtBig(active) }
               ], max: Math.max(total, b.total) * 1.02, format: function () { return ''; } });
-              api.html(out, '<div class="formula">active = shared + layers × k × FFN = ' + api.fmtBig(active) + ' (' + api.fmt(100 * active / total, 0) + '% of total)</div>');
+              api.html(out, '<div class="formula ffn-moe-f">active = shared + layers × k × FFN = ' + api.fmtBig(active) + ' (' + api.fmt(100 * active / total, 0) + '% of total)</div>');
               api.html(out, '<div class="ffn-moe-note">Weights in memory (BF16): ≈ ' + api.fmtBytes(total * 2) + ' vs ' + api.fmtBytes(b.bytesBF16) + ' dense. Per-token compute scales with <i>active</i> parameters. See ' + api.link('inference/quantization', 'quantization') + ' for shrinking the memory side.</div>');
             }
             api.slider(c, { label: 'Experts E', min: 2, max: 64, step: 1, value: 8, onInput: function (v) { E = v; if (k > E) k = E; draw(); } });
