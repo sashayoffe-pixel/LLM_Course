@@ -1,0 +1,12 @@
+.embeddings-svg { width: 100%; max-width: 560px; height: auto; background: var(--bg2); border: 1px solid var(--border); border-radius: 10px; display: block; margin: 8px auto; }
+.embeddings-svg text { fill: var(--text); font-size: 11px; font-family: inherit; }
+.embeddings-svg .embeddings-pt { cursor: pointer; }
+.embeddings-svg .embeddings-pt:hover circle { stroke: var(--warn); stroke-width: 2; }
+.embeddings-axis { stroke: var(--border2); stroke-width: 1; }
+.embeddings-calc { font-family: var(--mono, monospace); font-size: .88rem; background: var(--bg2); border: 1px solid var(--border); border-radius: 8px; padding: 8px 12px; margin: 6px 0; overflow-wrap: anywhere; }
+.embeddings-calc b { color: var(--warn); }
+.embeddings-cols { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 10px; }
+.embeddings-cols .card { margin: 0; }
+.embeddings-onehot { display: flex; flex-wrap: wrap; gap: 3px; margin: 6px 0; }
+.embeddings-onehot span { min-width: 26px; text-align: center; padding: 2px 4px; border-radius: 4px; background: var(--panel); border: 1px solid var(--border); font-family: var(--mono, monospace); font-size: .8rem; }
+.embeddings-onehot span.on { background: var(--accent); color: #fff; border-color: var(--accent); }

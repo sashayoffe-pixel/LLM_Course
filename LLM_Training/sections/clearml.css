@@ -1,0 +1,17 @@
+.clearml-mock{border:2px dashed var(--warn);border-radius:10px;padding:8px;background:#0c1118;position:relative}
+.clearml-mock-tag{display:inline-block;font-size:11px;background:var(--warn);color:#000;border-radius:4px;padding:1px 6px;margin-bottom:6px;font-weight:700}
+.clearml-tbl{width:100%;border-collapse:collapse;font-size:12.5px}
+.clearml-tbl th,.clearml-tbl td{border-bottom:1px solid var(--border);padding:4px 8px;text-align:left;white-space:nowrap}
+.clearml-tbl tr.sel td{background:rgba(78,168,255,.15)}
+.clearml-st{display:inline-block;padding:0 7px;border-radius:9px;font-size:11px}
+.clearml-st.done{background:rgba(90,209,138,.25);color:var(--good)}
+.clearml-st.run{background:rgba(78,168,255,.25);color:var(--accent)}
+.clearml-st.fail{background:rgba(255,93,115,.25);color:var(--bad)}
+.clearml-tabs{display:flex;gap:4px;flex-wrap:wrap;margin:8px 0}
+.clearml-q{display:flex;gap:6px;flex-wrap:wrap;margin:6px 0;min-height:30px}
+.clearml-job{font-size:12px;padding:2px 8px;border-radius:6px;border:1px solid var(--border);background:var(--panel2)}
+.clearml-job.run{border-color:var(--good);background:rgba(90,209,138,.18)}
+.clearml-job.done{opacity:.5}
+.clearml-ag{border:1px solid var(--border);border-radius:8px;padding:6px 10px;background:var(--panel2);min-width:140px}
+.clearml-pre{white-space:pre-wrap;word-break:break-word;overflow-x:auto}
+.clearml-wrapx{overflow-x:auto;max-width:100%}

@@ -399,7 +399,6 @@
         ],
         levels: [
           { name: 'Comparison', render: function (el, api) {
-            api.html(el, '<div class="big-picture-cmp"></div>');
             api.table(el, { cls: 'big-picture-cmp', headers: ['', 'Ordinary software', 'Search engine', 'Database', 'LLM'], rows: [
               ['Logic comes from', 'rules a human wrote', 'indexing + ranking', 'schema + query', 'patterns learned from data'],
               ['Same input → same output?', 'yes', 'mostly', 'yes', 'not necessarily (sampling)'],

@@ -36,5 +36,12 @@
 .glossary-feedback:empty { display: none; }
 .glossary-feedback.good b { color: var(--good); }
 .glossary-feedback.bad b { color: var(--bad); }
+.glossary-review { display: grid; grid-template-columns: minmax(0, 1fr); gap: 8px; }
+.glossary-review-row {
+  border: 1px solid var(--border); background: var(--panel); border-radius: 8px;
+  padding: 8px 10px; min-width: 0; overflow-wrap: anywhere; font-size: .92em; line-height: 1.45;
+}
+.glossary-review-top { margin-bottom: 4px; }
+.glossary-review-ans { color: var(--muted); }
 .glossary-ok { color: var(--good); }
 .glossary-no { color: var(--bad); }

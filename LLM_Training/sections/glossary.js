@@ -328,20 +328,25 @@
   function quizReview(el, api) {
     var Q = quizData();
     var answered = 0, correct = 0;
-    var rows = Q.map(function (q, qi) {
+    var summary = api.h('p', {});
+    el.appendChild(summary);
+    var list = api.h('div', { class: 'glossary-review' });
+    el.appendChild(list);
+    Q.forEach(function (q, qi) {
       var a = quizAnswers[qi];
-      var status = '—';
+      var status = '<span class="muted">not answered yet</span>';
       if (a != null) {
         answered++;
         if (a === q.a) { correct++; status = '<span class="glossary-ok">✓ right</span>'; }
         else status = '<span class="glossary-no">✗ wrong</span>';
       }
-      return [String(qi + 1), api.esc(q.short), a == null ? '<span class="muted">not yet</span>' : api.esc(q.opts[a]),
-        api.esc(q.opts[q.a]), status, api.link(q.target, secInfo(secOf(q.target)).title)];
+      list.appendChild(api.h('div', { class: 'glossary-review-row' },
+        api.h('div', { class: 'glossary-review-top', html: '<b>' + (qi + 1) + '. ' + api.esc(q.short) + '</b> ' + status }),
+        api.h('div', { class: 'glossary-review-ans', html: 'Your answer: ' + (a == null ? '<span class="muted">—</span>' : api.esc(q.opts[a])) }),
+        api.h('div', { class: 'glossary-review-ans', html: 'Correct answer: ' + api.esc(q.opts[q.a]) + ' · ' + api.link(q.target, secInfo(secOf(q.target)).title) })));
     });
-    api.html(el, '<p>Score: <b>' + correct + '</b> / ' + Q.length + ' · answered ' + answered + ' / ' + Q.length +
-      '. Your answers are kept while you move between zoom levels; Reset is on the Questions level.</p>');
-    api.table(el, { headers: ['#', 'Topic', 'Your answer', 'Correct answer', 'Result', 'Section'], rows: rows });
+    summary.innerHTML = 'Score: <b>' + correct + '</b> / ' + Q.length + ' · answered ' + answered + ' / ' + Q.length +
+      '. Answers are kept while you move between zoom levels; Reset is on the Questions level.';
   }
 
   // ------------------------------------------------------------------ register

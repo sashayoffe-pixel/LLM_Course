@@ -1,0 +1,14 @@
+.rag-practice-split { display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:12px; }
+.rag-practice-split > div { min-width:0; }
+.rag-practice-chunks { display:flex; flex-direction:column; gap:6px; margin:8px 0; }
+.rag-practice-chunk { border-left:5px solid var(--accent); border-radius:6px; padding:6px 8px; font-family:monospace; font-size:12.5px; white-space:pre-wrap; word-break:break-word; background:var(--panel); }
+.rag-practice-chunk .rag-practice-ov { background:rgba(255,190,90,.35); border-radius:3px; }
+.rag-practice-meta { font-size:11px; color:var(--muted); font-family:sans-serif; margin-bottom:3px; }
+.rag-practice-map { display:flex; height:26px; position:relative; background:var(--bg2); border:1px solid var(--border); border-radius:6px; overflow:hidden; margin:6px 0; }
+.rag-practice-map i { position:absolute; top:0; height:100%; opacity:.6; border-right:1px solid var(--bg); }
+.rag-practice-map .lane { position:absolute; left:0; right:0; }
+.rag-practice-doc { font-family:monospace; font-size:12.5px; white-space:pre-wrap; word-break:break-word; background:var(--bg2); border:1px solid var(--border); border-radius:8px; padding:8px; }
+.rag-practice-card { border:1px solid var(--border); border-radius:8px; padding:8px 10px; background:var(--panel); margin:6px 0; font-size:13px; }
+.rag-practice-card.hit { border-color:var(--good); }
+.rag-practice-prompt { font-family:monospace; font-size:12.5px; white-space:pre-wrap; word-break:break-word; background:var(--bg2); border:1px solid var(--border); border-radius:8px; padding:10px; }
+.rag-practice-cite { color:var(--accent); font-weight:700; }
