@@ -1,0 +1,11 @@
+.planning-multiagent-tao { border-left: 3px solid var(--border); padding: 4px 10px; margin: 6px 0; }
+.planning-multiagent-tao.t { border-color: #b98cff; }
+.planning-multiagent-tao.a { border-color: #ff9a4d; }
+.planning-multiagent-tao.o { border-color: #5ad18a; }
+.planning-multiagent-tao b { display: inline-block; min-width: 6.5em; }
+.planning-multiagent-tao pre, .planning-multiagent-term { white-space: pre-wrap; overflow-wrap: anywhere; font-family: ui-monospace, Menlo, monospace; font-size: 12.5px; margin: 4px 0 0; background: var(--bg2); border: 1px solid var(--border); border-radius: 6px; padding: 6px 8px; }
+.planning-multiagent-tabs { display: flex; flex-wrap: wrap; gap: 6px; margin: 6px 0; }
+.planning-multiagent-cmp { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 10px; }
+.planning-multiagent-big { font-size: 26px; font-weight: 700; color: var(--accent); }
+.planning-multiagent-seq { font-family: ui-monospace, Menlo, monospace; font-size: 12px; white-space: pre-wrap; overflow-wrap: anywhere; background: var(--bg2); border: 1px solid var(--border); border-radius: 6px; padding: 8px; max-height: 340px; overflow: auto; }
+.planning-multiagent-seq .m-new { background: rgba(90,209,138,.16); }

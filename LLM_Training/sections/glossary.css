@@ -1,0 +1,40 @@
+/* Glossary & quiz (appendix) */
+.glossary-card-desc { color: var(--muted); font-size: .9em; margin: 4px 0 8px; }
+.glossary-card-ex { font-size: .88em; margin-top: 6px; overflow-wrap: anywhere; }
+
+.glossary-bar { margin-bottom: 10px; align-items: center; }
+.glossary-count { font-size: .85em; }
+
+.glossary-list { display: block; }
+.glossary-term {
+  border: 1px solid var(--border); background: var(--panel); border-radius: 8px;
+  padding: 8px 10px; margin-bottom: 6px;
+}
+.glossary-term-head { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+.glossary-term-name { font-size: 1em; overflow-wrap: anywhere; }
+.glossary-where { margin-left: auto; font-size: .85em; }
+.glossary-term-def { margin-top: 4px; font-size: .92em; line-height: 1.45; }
+.glossary-group { margin-bottom: 8px; }
+.glossary-group-title { margin: 14px 0 6px; font-size: 1em; }
+.glossary-hidden { display: none !important; }
+
+.glossary-score { font-size: .95em; }
+.glossary-quiz { display: grid; grid-template-columns: minmax(0, 1fr); gap: 12px; }
+.glossary-q { padding: 12px 14px; min-width: 0; overflow-wrap: anywhere; }
+.glossary-score { min-width: 0; flex: 1 1 220px; }
+.glossary-q-num { font-size: .78em; color: var(--muted); text-transform: uppercase; letter-spacing: .05em; }
+.glossary-q-text { margin: 4px 0 10px; font-weight: 600; line-height: 1.45; }
+.glossary-opts { display: flex; flex-direction: column; gap: 6px; }
+.glossary-opt {
+  text-align: left; white-space: normal; width: 100%; line-height: 1.35;
+  overflow-wrap: anywhere;
+}
+.glossary-opt.right, .glossary-opt.right:disabled { border-color: var(--good); background: rgba(90, 209, 138, .16); opacity: 1; }
+.glossary-opt.wrong, .glossary-opt.wrong:disabled { border-color: var(--bad); background: rgba(255, 93, 115, .16); opacity: 1; }
+.glossary-opt:disabled { cursor: default; opacity: .6; }
+.glossary-feedback { margin-top: 8px; font-size: .92em; line-height: 1.45; }
+.glossary-feedback:empty { display: none; }
+.glossary-feedback.good b { color: var(--good); }
+.glossary-feedback.bad b { color: var(--bad); }
+.glossary-ok { color: var(--good); }
+.glossary-no { color: var(--bad); }

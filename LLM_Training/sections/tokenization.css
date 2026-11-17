@@ -1,0 +1,11 @@
+.tokenization-cols { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 10px; }
+.tokenization-cols .card { margin: 0; }
+.tokenization-chips { display: flex; flex-wrap: wrap; gap: 4px; margin: 6px 0; align-items: center; }
+.tokenization-chip { display: inline-flex; flex-direction: column; align-items: center; background: var(--panel); border: 1px solid var(--border2); border-radius: 6px; padding: 2px 7px; font-family: var(--mono, monospace); font-size: .85rem; }
+.tokenization-chip small { color: var(--t-integer); font-size: .7rem; }
+.tokenization-chip.tokenization-byte { border-style: dashed; }
+.tokenization-seq { background: var(--bg2); border: 1px solid var(--border); border-radius: 8px; padding: 10px; font-family: var(--mono, monospace); font-size: .82rem; line-height: 1.7; overflow-wrap: anywhere; white-space: pre-wrap; }
+.tokenization-sp { color: var(--warn); font-weight: 700; }
+.tokenization-role { color: var(--accent); }
+.tokenization-pair { font-family: var(--mono, monospace); }
+.tokenization-hl { background: rgba(242,184,75,.25); border-radius: 3px; }

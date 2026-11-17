@@ -1,0 +1,8 @@
+.output-sampling-note { font-size:13px; color:var(--muted); margin:6px 0; }
+.output-sampling-hist { margin-top:10px; }
+.output-sampling-gen { font-size:16px; line-height:2; padding:10px; border:1px solid var(--border); border-radius:8px; background:var(--panel); }
+.output-sampling-gen .tok.new { border-color:var(--good); background:rgba(90,209,138,.18); }
+.output-sampling-gen .tok.eos { border-color:var(--bad); }
+.output-sampling-state { display:flex; flex-wrap:wrap; gap:6px; align-items:center; font-family:monospace; margin:6px 0; }
+.output-sampling-ok { color:var(--good); } .output-sampling-no { color:var(--bad); }
+.output-sampling-row2 { display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:12px; }

@@ -1,0 +1,23 @@
+.memory-rag-gauge { margin: 8px 0; }
+.memory-rag-gauge-label { font-size: 12px; color: var(--muted); margin-bottom: 3px; }
+.memory-rag-gauge-bar { display: flex; height: 26px; border: 1px solid var(--border); border-radius: 6px; overflow: hidden; background: var(--bg2); }
+.memory-rag-gauge-bar > span { display: block; height: 100%; min-width: 0; transition: width .3s; }
+.memory-rag-gauge-legend { display: flex; flex-wrap: wrap; gap: 4px 12px; font-size: 12px; margin-top: 4px; color: var(--muted); }
+.memory-rag-gauge-legend i { display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 4px; vertical-align: -1px; }
+.memory-rag-seg-sys { background: #6b7a99; }
+.memory-rag-seg-tools { background: #b98cff; }
+.memory-rag-seg-sum { background: #5ad18a; }
+.memory-rag-seg-turns { background: #4ea8ff; }
+.memory-rag-seg-free { background: transparent; }
+.memory-rag-thresh { position: relative; height: 0; }
+.memory-rag-thresh b { position: absolute; top: -30px; width: 2px; height: 30px; background: var(--warn); }
+.memory-rag-chunk { border: 1px solid var(--border); border-radius: 6px; padding: 6px 8px; margin: 4px 0; background: var(--panel2); font-size: 13px; }
+.memory-rag-chunk.hit { border-color: var(--good); background: rgba(90,209,138,.10); }
+.memory-rag-chunk.dim { opacity: .55; }
+.memory-rag-doc { display: flex; gap: 8px; align-items: baseline; }
+.memory-rag-doc .memory-rag-id { font-family: var(--mono, monospace); color: var(--accent); min-width: 2.2em; }
+.memory-rag-prompt { white-space: pre-wrap; font-family: ui-monospace, Menlo, monospace; font-size: 12.5px; background: var(--bg2); border: 1px solid var(--border); border-radius: 6px; padding: 8px 10px; overflow-wrap: anywhere; }
+.memory-rag-vec { font-family: ui-monospace, Menlo, monospace; font-size: 12px; overflow-wrap: anywhere; }
+.memory-rag-tabs { display: flex; flex-wrap: wrap; gap: 6px; margin: 6px 0; }
+.memory-rag-two { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 10px; }
+.memory-rag-score { font-variant-numeric: tabular-nums; }

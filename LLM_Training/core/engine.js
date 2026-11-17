@@ -750,7 +750,7 @@
       el.appendChild(d); return d;
     }
     // responsive grid container: cols = min column width in px
-    function grid(el, minPx) { var g = h('div', { class: 'grid', style: { gridTemplateColumns: 'repeat(auto-fit, minmax(' + Math.min(minPx || 240, 280) + 'px, 1fr))' } }); el.appendChild(g); return g; }
+    function grid(el, minPx) { var g = h('div', { class: 'grid', style: { gridTemplateColumns: 'repeat(auto-fit, minmax(min(' + Math.min(minPx || 240, 280) + 'px, 100%), 1fr))' } }); el.appendChild(g); return g; }
     function card(el, title, html, cls) { var c = h('div', { class: 'card' + (cls ? ' ' + cls : '') }, title ? h('div', { class: 'card-title', html: title }) : null, h('div', { class: 'card-body', html: html || '' })); el.appendChild(c); return c; }
   }
 

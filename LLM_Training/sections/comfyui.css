@@ -1,0 +1,21 @@
+.comfyui-scroll { overflow-x: auto; border: 1px solid var(--border); border-radius: 8px; background: var(--bg2); }
+.comfyui-scroll svg { display: block; min-width: 760px; width: 100%; height: auto; }
+.comfyui-node { cursor: pointer; }
+.comfyui-node rect.comfyui-body { fill: var(--panel2); stroke: var(--border); stroke-width: 1.5; }
+.comfyui-node:hover rect.comfyui-body, .comfyui-node.comfyui-sel rect.comfyui-body { stroke: var(--accent); stroke-width: 2.5; }
+.comfyui-node text { fill: var(--text); font-size: 12px; }
+.comfyui-node text.comfyui-title { font-weight: 700; font-size: 13px; }
+.comfyui-node text.comfyui-sock { fill: var(--muted); font-size: 11px; }
+.comfyui-edge { fill: none; stroke-width: 2.5; opacity: .85; }
+.comfyui-edge.comfyui-dim { opacity: .15; }
+.comfyui-legend { display: flex; flex-wrap: wrap; gap: 6px 14px; margin: 8px 0; font-size: 12px; }
+.comfyui-legend span { display: inline-flex; align-items: center; gap: 5px; }
+.comfyui-dot { width: 11px; height: 11px; border-radius: 50%; display: inline-block; }
+.comfyui-canvas { image-rendering: pixelated; width: 256px; max-width: 100%; height: auto; aspect-ratio: 1; border: 1px solid var(--border); border-radius: 6px; background: #000; }
+.comfyui-pair { display: flex; flex-wrap: wrap; gap: 16px; align-items: flex-start; }
+.comfyui-side { flex: 1 1 260px; min-width: 0; }
+.comfyui-info { margin-top: 8px; padding: 8px 10px; border: 1px solid var(--border); border-radius: 8px; background: var(--panel); font-size: 13px; }
+.comfyui-svgbox { width: 100%; max-width: 560px; height: auto; }
+.comfyui-svgbox text { fill: var(--text); font-size: 12px; }
+.comfyui-svgbox .comfyui-m { fill: var(--muted); }
+.comfyui-big { font-size: 22px; font-weight: 700; color: var(--accent); }
