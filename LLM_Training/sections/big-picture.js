@@ -344,7 +344,7 @@
             var B = api.ref.paramBreakdown();
             var s = api.h('div', { class: 'big-picture-stat' });
             s.innerHTML = '<div><span class="big-num">' + api.fmtBig(B.total) + '</span>parameters</div>' +
-              '<div><span class="big-num">' + api.fmtBytes(B.bytesBF16) + '</span>in BF16 (2 bytes each)</div>' +
+              '<div><span class="big-num">' + api.fmtBytes(B.bytesBF16) + '</span>in BF16 (2 bytes each; ' + (B.bytesBF16 / 1e9).toFixed(1) + ' GB decimal ≈ 16 GB)</div>' +
               '<div><span class="big-num">' + api.fmtBig(2 * B.total).replace(' B', ' G') + 'FLOPs</span>per generated token (≈ 2·N)</div>';
             el.appendChild(s);
             api.html(el, '<p>Every parameter is a number inside a weight matrix. "Training" means adjusting all ' + api.fmtBig(B.total) + ' of them; "inference" means reading them all (roughly once per token).</p>');
