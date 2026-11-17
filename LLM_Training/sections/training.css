@@ -1,0 +1,25 @@
+/* training section */
+.training-kpis { grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); margin: 8px 0; }
+.training-kpis .big-num { font-size: 1.35rem; overflow-wrap: anywhere; }
+.training-shift { margin: 6px 0 10px; }
+.training-shift-arrow { margin: 4px 0; font-size: .85rem; }
+.training-good { color: var(--good); }
+.training-bad { color: var(--bad); }
+.training-warn { color: var(--warn); }
+.training-bits { display: flex; flex-direction: column; gap: 10px; margin: 8px 0 12px; }
+.training-bitrow { font-size: .88rem; }
+.training-bitcells { display: flex; flex-wrap: wrap; gap: 2px; margin: 4px 0; }
+.training-bitcells i { display: inline-block; width: 12px; height: 16px; border-radius: 2px; }
+.training-bit-s { background: var(--bad); }
+.training-bit-e { background: var(--warn); }
+.training-bit-m { background: var(--accent); }
+.training-sft-toks { display: flex; flex-wrap: wrap; gap: 4px; margin: 6px 0; }
+.training-legend { gap: 8px; font-size: .8rem; }
+.tok.training-role-tmpl { border-color: var(--muted); color: var(--muted); }
+.tok.training-role-user { border-color: var(--t-text); background: rgba(120,160,255,.08); }
+.tok.training-role-asst { border-color: var(--good); background: rgba(90,209,138,.15); }
+.training-mhead, .training-mrow { display: grid; grid-template-columns: minmax(90px, 1.4fr) 50px 60px; gap: 8px; align-items: center; font-size: .85rem; }
+.training-mhead { color: var(--muted); margin-top: 8px; }
+.training-mgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); column-gap: 18px; row-gap: 2px; margin-bottom: 8px; }
+.training-mrow.off { opacity: .4; }
+.training-mbit { font-family: var(--mono); color: var(--t-mask); text-align: center; }

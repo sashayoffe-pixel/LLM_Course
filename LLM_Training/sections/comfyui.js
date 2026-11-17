@@ -22,6 +22,12 @@
     return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v);
   }
 
+  // Workaround: in the narrow column layout .slide-content shrink-wraps to its widest child; cap it.
+  function fit(el, api) {
+    var cap = function () { var p = el.closest && el.closest('.slide-content'); if (p) p.style.maxWidth = '100%'; };
+    cap(); api.after(0, cap);
+  }
+
   /* ---------------------------------------------------------- slide 1: node graph */
   var NODES = [
     { id: 'ckpt', title: 'Load Checkpoint', x: 10, y: 110, w: 170, h: 116, ins: [], outs: ['MODEL', 'CLIP', 'VAE'],
@@ -129,7 +135,7 @@
           { name: 'workflow', type: 'json', shape: 'object', example: 'node id → {class_type, inputs}' }
         ],
         levels: [
-          { name: 'Graph', render: function (el, api) {
+          { name: 'Graph', render: function (el, api) { fit(el, api);
             api.html(el, 'A text-to-image workflow, as ComfyUI draws it. <b>Click a node</b> to highlight its wires.');
             legend(api, el);
             var info = api.h('div', { class: 'comfyui-info' });
@@ -140,7 +146,7 @@
             g.select('ks');
             api.callout(el, 'This is a <b>DAG</b> (directed acyclic graph): data flows left to right once. Contrast with an agent graph that <i>loops</i> (' + api.link('langgraph/chains-vs-graphs', 'chains vs graphs') + ').', 'key');
           } },
-          { name: 'Sockets = types', render: function (el, api) {
+          { name: 'Sockets = types', render: function (el, api) { fit(el, api);
             api.html(el, 'Each socket type maps to one of our 12 data types. The <b>shapes are for SD-1.5-class models at 512×512</b>; other model families differ.');
             legend(api, el);
             api.table(el, {
@@ -158,7 +164,7 @@
             });
             api.callout(el, 'Mnemonic: <b>CLIP</b> turns text into CONDITIONING, <b>MODEL</b> turns noise + CONDITIONING into a clean LATENT, <b>VAE</b> turns LATENT into IMAGE.', 'tip');
           } },
-          { name: 'As JSON', render: function (el, api) {
+          { name: 'As JSON', render: function (el, api) { fit(el, api);
             api.html(el, 'Under the hood the same graph is a JSON object. A wire is written <code>["source_node_id", output_index]</code>; a widget is a plain value.');
             var wf = {
               '4': { class_type: 'CheckpointLoaderSimple', inputs: { ckpt_name: 'model.safetensors' } },
@@ -196,7 +202,7 @@
           { name: 'pixels', type: 'tensor', shape: '[3 × 512 × 512]', example: '786,432 values' }
         ],
         levels: [
-          { name: 'Denoising', render: function (el, api) {
+          { name: 'Denoising', render: function (el, api) { fit(el, api);
             api.html(el, 'A toy 16×16 "image". Step 0 is pure seeded noise; each scheduler step removes noise until the picture emerges.');
             api.illustrative(el, ' Real models predict the noise with a neural network; here the "model" is a perfect oracle that knows the target, so you only see the <i>schedule</i>.');
             var N = 20, tgt = targetImage();
@@ -236,7 +242,7 @@
             el.appendChild(pair);
             draw();
           } },
-          { name: 'Guidance (CFG)', render: function (el, api) {
+          { name: 'Guidance (CFG)', render: function (el, api) { fit(el, api);
             api.html(el, 'At every step the model is called twice: once with the prompt (<b>conditional</b>) and once with an empty/negative prompt (<b>unconditional</b>). Guidance pushes the result away from "generic" and toward "the prompt".');
             api.html(el, '<div class="formula">ε = ε_uncond + s · (ε_cond − ε_uncond)</div>');
             var epsU = [0.20, -0.10, 0.05, 0.30], epsC = [0.50, -0.30, 0.15, 0.10];
@@ -259,7 +265,7 @@
             } });
             api.callout(el, 'Cost: each step needs <b>two</b> model evaluations (often batched together), so CFG roughly doubles the compute per step. Very high s tends to give over-saturated, harsh images; very low s tends to ignore the prompt (typical sweet spots are model-dependent, often cited around 5–8).', 'hedge');
           } },
-          { name: 'VAE latents', render: function (el, api) {
+          { name: 'VAE latents', render: function (el, api) { fit(el, api);
             api.html(el, 'Diffusing 786,432 pixel values would be slow. A <b>VAE</b> encoder squeezes the image into a small <b>latent</b>; diffusion happens there; a VAE decoder paints the pixels back.');
             api.blocks(el, { blocks: [
               { id: 'px', label: 'Pixels', type: 'tensor', shape: '[3 × 512 × 512]' },
@@ -308,7 +314,7 @@
           { name: 'cross-attention weights', type: 'probability', shape: '[n_patches × n_tokens]', example: 'rows sum to 1' }
         ],
         levels: [
-          { name: 'Pipeline', render: function (el, api) {
+          { name: 'Pipeline', render: function (el, api) { fit(el, api);
             api.html(el, 'Text goes in, a stack of vectors comes out, and the denoiser <b>reads</b> them at every layer and every step.');
             api.blocks(el, { rows: [[
               { id: 't', label: 'Prompt', type: 'text', shape: 'string' },
@@ -323,7 +329,7 @@
             ]] });
             api.callout(el, 'This is the same machinery as an LLM\'s front end: ' + api.link('tokenization', 'tokenization') + ' → ' + api.link('embeddings', 'embeddings') + ' → transformer layers (' + api.link('transformer-block', 'transformer block') + '). A text encoder is just a transformer that <i>reads</i> the prompt (bidirectionally, in CLIP\'s case) instead of predicting the next token. The prompt is encoded <b>once</b>; the denoiser then re-reads it every step.', 'key');
           } },
-          { name: 'Self vs cross', render: function (el, api) {
+          { name: 'Self vs cross', render: function (el, api) { fit(el, api);
             api.html(el, 'Same formula, <code>softmax(Q·Kᵀ/√d)·V</code>; different sources:');
             var g = api.grid(el, 260);
             api.card(g, 'Self-attention (LLM)', 'Q, K, V all come from <b>the same</b> sequence X.<br>Scores: ' + api.shape('[seq × seq]') + ', causal mask hides the future.<br>Tokens look at <i>other tokens</i>. See ' + api.link('attention/worked-example', 'the worked example') + '.');
@@ -337,7 +343,7 @@
             ] });
             api.callout(el, 'Recent DiT-style models often <b>concatenate</b> text and image tokens into one sequence and use joint self-attention instead; cross-attention is the classic U-Net design. Either way, text steers the image through attention.', 'hedge');
           } },
-          { name: 'Numbers', render: function (el, api) {
+          { name: 'Numbers', render: function (el, api) { fit(el, api);
             var M = api.math;
             api.html(el, 'A tiny cross-attention: 3 image patches ask questions of 4 prompt tokens. <code>d = 2</code>.');
             api.illustrative(el, ' All numbers here are invented for readability; real d is 40–160 per head.');
@@ -386,7 +392,7 @@
           { name: 'generate_image', type: 'function', shape: 'harness code', example: 'wraps the 3 HTTP calls' }
         ],
         levels: [
-          { name: 'Round trip', render: function (el, api) {
+          { name: 'Round trip', render: function (el, api) { fit(el, api);
             api.html(el, 'The agent never talks to ComfyUI directly: the <b>harness</b> does.');
             api.blocks(el, { rows: [[
               { id: 'llm', label: 'LLM emits tool call', type: 'json', goto: 'tool-calling/round-trip' },
@@ -401,7 +407,7 @@
             api.callout(el, 'The returned path (or a short description) becomes a <b>tool result</b> appended to the conversation, as in ' + api.link('llm-to-agent/agent-loop', 'the agent loop'), 'key');
             api.docsNote(el, 'Endpoint names (<code>/prompt</code>, <code>/history</code>, <code>/view</code>, <code>/ws</code>) reflect ComfyUI\'s server as commonly documented; verify against your version.');
           } },
-          { name: 'HTTP payloads', render: function (el, api) {
+          { name: 'HTTP payloads', render: function (el, api) { fit(el, api);
             api.html(el, 'Edit the inputs; the JSON that the harness would POST is rebuilt below.');
             var st = { text: 'a cat sitting on a mat, watercolor', steps: 20, cfg: 7, seed: 42 };
             var out = api.h('div');
@@ -425,7 +431,7 @@
               api.code(out, JSON.stringify({ prompt_id: 'a1b2c3d4-…', number: 0, node_errors: {} }, null, 2), 'json');
               api.html(out, '<b>2. GET /history/a1b2c3d4-…</b> once finished (an empty object <code>{}</code> means "not done yet")');
               api.code(out, JSON.stringify({ 'a1b2c3d4-…': { outputs: { '9': { images: [{ filename: 'agent_00001_.png', subfolder: '', type: 'output' }] } }, status: { completed: true } } }, null, 2), 'json');
-              api.html(out, '<b>3. GET /view?filename=agent_00001_.png&amp;subfolder=&amp;type=output</b> → PNG bytes');
+              api.html(out, '<b style="overflow-wrap:anywhere">3. GET /view?filename=agent_00001_.png&amp;subfolder=&amp;type=output</b> → PNG bytes');
             }
             var c = api.h('div', { class: 'controls' }); el.appendChild(c); el.appendChild(out);
             api.input(c, { label: 'prompt text', value: st.text, onInput: function (v) { st.text = v; build(); }, init: false });
@@ -435,7 +441,7 @@
             build();
             api.docsNote(el);
           } },
-          { name: 'Tool definition', render: function (el, api) {
+          { name: 'Tool definition', render: function (el, api) { fit(el, api);
             api.html(el, 'What the <b>LLM</b> sees is only this small schema ' + api.badge('json', 'object') + '; everything above is hidden behind it. See ' + api.link('tool-calling/tool-definition', 'tool definition') + '.');
             var tool = {
               name: 'generate_image',
@@ -496,7 +502,7 @@
           { name: 'agent state', type: 'json', shape: 'object', example: 'messages + scratch' }
         ],
         levels: [
-          { name: 'Ecosystem', render: function (el, api) {
+          { name: 'Ecosystem', render: function (el, api) { fit(el, api);
             api.html(el, 'A workflow is mostly <b>swapping typed parts</b>:');
             var g = api.grid(el, 240);
             api.card(g, 'Checkpoints &amp; LoRAs', 'Different MODEL / CLIP / VAE bundles (SD-1.5-class, SDXL-class, Flux-class, …). A LoRA node patches the MODEL socket with small low-rank updates, the same idea as in ' + api.link('training/lora', 'LoRA') + '.');
@@ -506,7 +512,7 @@
             api.callout(el, 'Custom nodes are executable code from the internet. For an agent that edits workflows or installs nodes, this is an attack surface: pin versions and review them.', 'warn');
             api.docsNote(el, 'Node names and folder layout follow ComfyUI conventions as commonly documented; check the current docs.');
           } },
-          { name: 'VRAM maths', render: function (el, api) {
+          { name: 'VRAM maths', render: function (el, api) { fit(el, api);
             api.html(el, 'Rule of thumb: <b>weights ≈ parameters × bytes per parameter</b>. Activations, text encoders and the VAE come on top.');
             api.illustrative(el, ' Parameter counts below are approximate public figures (≈ order of magnitude) and may differ by variant.');
             var models = [
@@ -525,7 +531,7 @@
             draw(2);
             api.callout(el, 'Practical hedge: SD-1.5-class workflows are often run on roughly 4–6 GB GPUs, SDXL-class on roughly 8–12 GB, Flux-class typically needs more (≈ 16–24 GB, or less with quantization / offloading, at a speed cost). Treat these as rough community experience, not guarantees.', 'hedge');
           } },
-          { name: 'DAG vs loop', render: function (el, api) {
+          { name: 'DAG vs loop', render: function (el, api) { fit(el, api);
             api.html(el, 'Two kinds of graph, easy to confuse:');
             var wrap = api.h('div', { class: 'comfyui-pair' });
             function svgBox(title, loop) {

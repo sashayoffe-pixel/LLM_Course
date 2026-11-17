@@ -259,7 +259,8 @@ pre.code code { background: none; border: 0; padding: 0; font-size: inherit; whi
 
 /* ---------- responsive ---------- */
 @media (max-width: 1180px) {
-  .slide-body { flex-direction: column; }
+  .slide-body { flex-direction: column; align-items: stretch; }
+  .slide-content { width: 100%; max-width: 100%; }
   .keypanel { position: static; width: 100%; flex: 0 0 auto; }
 }
 @media (max-width: 900px) {
