@@ -408,8 +408,8 @@
               out.innerHTML = '';
               api.bars(out, { title: 'Parameters (illustrative MoE built from reference-model dims)', items: [
                 { label: 'Dense reference', value: b.total, color: 'var(--muted)', note: api.fmtBig(b.total) },
-                { label: 'MoE total (' + E + ' experts)', value: total, color: 'var(--accent)', note: api.fmtBig(total) },
-                { label: 'MoE active / token (k=' + k + ')', value: active, color: 'var(--good)', note: api.fmtBig(active) }
+                { label: 'MoE total', value: total, color: 'var(--accent)', note: api.fmtBig(total) },
+                { label: 'MoE active', value: active, color: 'var(--good)', note: api.fmtBig(active) }
               ], max: Math.max(total, b.total) * 1.02, format: function () { return ''; } });
               api.html(out, '<div class="formula ffn-moe-f">active = shared + layers × k × FFN = ' + api.fmtBig(active) + ' (' + api.fmt(100 * active / total, 0) + '% of total)</div>');
               api.html(out, '<div class="ffn-moe-note">Weights in memory (BF16): ≈ ' + api.fmtBytes(total * 2) + ' vs ' + api.fmtBytes(b.bytesBF16) + ' dense. Per-token compute scales with <i>active</i> parameters. See ' + api.link('inference/quantization', 'quantization') + ' for shrinking the memory side.</div>');
