@@ -1,0 +1,68 @@
+# LLM Training — how large language models and agents work
+
+An interactive, offline web course for engineers who are not ML specialists.
+
+* **Part I — How LLMs Work:** big picture and master architecture map, tokenization, embeddings, the transformer block,
+  attention (full worked numeric example), FFN/MoE, output and sampling, training, ClearML, inference and the KV cache,
+  the chat API, reasoning.
+* **Part II — Agentic AI:** from LLM to agent, tool calling, LangChain, memory and RAG, RAG in practice, planning and
+  multi-agent systems, Agent Skills, LangGraph, ComfyUI, safety and evaluation.
+* **Appendix:** data-type reference, a filterable glossary and a 12-question quiz.
+
+Every slide has 2–4 **zoom levels** (overview → sub-process → calculation) and a side panel with what is critical to
+understand, the critical details, and every datapoint on the slide labelled with one of 12 colour-coded data types
+(text, token, integer, float, probability, vector, matrix, tensor, mask, boolean, json, function) and its shape.
+
+## Run it
+
+**Offline:** double-click `index.html`. No build step, no network, no dependencies.
+
+**Local server (optional):**
+```bash
+node serve.js          # → http://localhost:8765
+```
+
+## Controls
+| | |
+|---|---|
+| `←` / `→` or Back / Next | previous / next slide |
+| `↓` / `↑` or ▼ Dive in / ▲ Zoom out | go one zoom level deeper / back out |
+| breadcrumb | jump to any zoom level of the slide |
+| ☰ | show or hide the table of contents |
+| clickable diagram blocks | dive into the next level or jump to the related section |
+
+Your position is kept in the URL hash (`#/attention/worked-example/2`), so links can be bookmarked and shared.
+Visited slides are remembered in `localStorage`.
+
+## Project layout
+```
+index.html            loads core/ and every section file
+core/engine.js        navigation, zoom levels, side panel, helper API (blocks, stepper, matrix, charts, …)
+core/styles.css       dark theme
+sections/<id>.js/.css one file per section; order in the course comes from each section's `order`
+CONTRACT.md           section schema, helper API, data-type taxonomy, running examples, section map
+serve.js              tiny static server (port 8765)
+tools/validate.js     stub registration + schema test for section files
+tools/browser-test.js walks every slide and zoom level in Chromium and interacts with every control
+tools/shot.js         screenshot helper
+screenshots/          key slides at desktop and narrow widths
+```
+
+## Tests
+```bash
+node tools/validate.js                       # schema of every section
+node tools/browser-test.js --strict          # every slide × zoom level at 1440 px, all controls exercised
+node tools/browser-test.js --strict --width=390   # narrow screen (checks horizontal overflow)
+```
+The browser test needs Playwright with Chromium (`require('playwright')`).
+
+## Running examples
+* Prompt **"The cat sat on the"** → next token **" mat"** (GPT-2 IDs 464, 3797, 3332, 319, 262 → 2603).
+* Toy model for hand calculations: `d_model = 4`, 2 heads, `d_head = 2`.
+* Reference model ("Llama-3-8B-class"): vocab 128,256 · d_model 4,096 · 32 layers · 32 query / 8 KV heads ·
+  d_head 128 · FFN 14,336 · ≈ 8.03 B parameters · ≈ 16 GB in BF16 · KV cache 128 KiB per token.
+* Agents: "Book me a table for 2 in Paris tomorrow at 8pm and tell me if I need an umbrella" and a coding agent
+  fixing a failing unit test.
+
+Worked numbers are computed at runtime so they stay consistent; illustrative values are labelled; framework API slides
+carry a "check current docs" note.
