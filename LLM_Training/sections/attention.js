@@ -76,8 +76,8 @@
       for (var j = 0; j < n; j++) {
         var w = j <= sel ? A[sel][j] : 0;
         if (j <= sel && j !== sel) {
-          var xa = x0 + sel * dx, xb = x0 + j * dx, mid = (xa + xb) / 2, hgt = 18 + Math.abs(xa - xb) * 0.42;
-          s += '<path d="M' + xa + ' ' + (base - 14) + ' Q' + mid + ' ' + (base - 14 - hgt * 1.6) + ' ' + xb + ' ' + (base - 14) + '" fill="none" stroke="#ff9a4d" stroke-linecap="round" stroke-width="' + (1 + 13 * w).toFixed(1) + '" opacity="' + (0.25 + 0.75 * w).toFixed(2) + '"/>';
+          var xa = x0 + sel * dx, xb = x0 + j * dx, mid = (xa + xb) / 2, hgt = 2 * (12 + Math.abs(xa - xb) / ((n - 1) * dx) * 80);
+          s += '<path d="M' + xa + ' ' + (base - 14) + ' Q' + mid + ' ' + (base - 14 - hgt) + ' ' + xb + ' ' + (base - 14) + '" fill="none" stroke="#ff9a4d" stroke-linecap="round" stroke-width="' + (1 + 13 * w).toFixed(1) + '" opacity="' + (0.25 + 0.75 * w).toFixed(2) + '"/>';
         }
         if (j === sel && w > 0) {
           var cx = x0 + j * dx;
