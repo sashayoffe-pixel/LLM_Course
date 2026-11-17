@@ -22,7 +22,6 @@
   function tokEst(s) { return Math.ceil(s.length / 4); }
   function tr(call, res, err) { return { type: 'tool_result', tool_use_id: call.id, content: typeof res === 'string' ? res : JSON.stringify(res), is_error: !!err }; }
   function reqPayload(msgs) { return { model: '<model-id>', system: SYSTEM, messages: msgs, tools: '[ …3 tool schemas, see tool-definition… ]', max_tokens: 1024 }; }
-  function usage(o) { return { input_tokens: tokEst(JSON.stringify(o.__in)), output_tokens: tokEst(JSON.stringify(o.content)) }; }
 
   // ---------- sequence diagram ----------
   var LANES = ['User', 'Harness', 'Model', 'Tools'];
@@ -357,9 +356,8 @@
               api.html(out, '<p class="muted">Rule trace:</p><ul>' + r.trace.map(function (t) { return '<li>' + api.esc(t) + '</li>'; }).join('') + '</ul>');
             }
             var c = api.h('div', { class: 'controls' }); el.appendChild(c);
-            api.select(c, { label: 'Examples', options: [{ value: api.ex.agent.request, label: 'Paris request (umbrella + table)' }, { value: 'Do I need an umbrella in London tomorrow?', label: 'Weather only' }, { value: 'Find a restaurant in Rome for 4 at 7pm', label: 'Search only' }, { value: 'Reserve a table in Berlin', label: 'Missing arguments' }, { value: 'Tell me a joke', label: 'No tool needed' }], value: api.ex.agent.request, init: false, onChange: function (v) { st.v = v; inp.value = v; draw(); } });
-            var f = api.input(c, { label: 'Request', value: api.ex.agent.request, placeholder: 'Type a request…', onInput: function (v) { st.v = v; draw(); }, init: false });
-            var inp = el.querySelector('input[type=text], input:not([type])') || { value: '' };
+            api.select(c, { label: 'Examples', options: [{ value: api.ex.agent.request, label: 'Paris request (umbrella + table)' }, { value: 'Do I need an umbrella in London tomorrow?', label: 'Weather only' }, { value: 'Find a restaurant in Rome for 4 at 7pm', label: 'Search only' }, { value: 'Reserve a table in Berlin', label: 'Missing arguments' }, { value: 'Tell me a joke', label: 'No tool needed' }], value: api.ex.agent.request, init: false, onChange: function (v) { st.v = v; if (inp) inp.value = v; draw(); } });
+            var inp = api.input(c, { label: 'Request', value: api.ex.agent.request, placeholder: 'Type a request…', onInput: function (v) { st.v = v; draw(); }, init: false });
             el.appendChild(out); draw();
           } },
           { name: 'The rules', render: function (el, api) {

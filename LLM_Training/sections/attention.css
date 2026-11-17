@@ -25,3 +25,8 @@ table.attention-vis th { color: var(--muted); font-weight: 500; padding: 2px 6px
 table.attention-vis td { width: 44px; height: 30px; text-align: center; border-radius: 5px; }
 td.attention-ok { background: rgba(90, 209, 138, .22); color: #5ad18a; }
 td.attention-no { background: repeating-linear-gradient(45deg, #2a1218 0 4px, #1a0d11 4px 8px); color: #ff8b9b; }
+.attention-strip { display: flex; flex-wrap: wrap; align-items: center; gap: 4px; margin: 8px 0 0; font: .78rem var(--mono, monospace); }
+.attention-stage { padding: 2px 8px; border-radius: 10px; border: 1px solid var(--border2, #33405a); color: var(--muted); }
+.attention-stage.done { color: var(--text); border-color: #2c4a73; }
+.attention-stage.on { background: var(--accent); border-color: var(--accent); color: #fff; }
+.attention-stagearrow { color: var(--muted); }

@@ -359,7 +359,7 @@
               api.html(out, '<p class="muted">Features starting with <code>c:</code> are hand-made concept groups (e.g. throttle ≈ limit ≈ 429) that stand in for what a learned embedding captures automatically.</p>');
             }
             api.input(c, { label: 'Question', value: st.q, onInput: function (v) { st.q = v; draw(); }, init: false });
-            api.select(c, { label: 'Compare with', options: DOCS.map(function (d, i) { return { value: i, label: '#' + i + ' ' + d.slice(0, 28) + '…' }; }), value: st.doc, onChange: function (v) { st.doc = +v; draw(); } });
+            api.select(c, { label: 'Compare with', options: DOCS.map(function (d, i) { return { value: i, label: '#' + i + ' ' + d.slice(0, 16) + '…' }; }), value: st.doc, onChange: function (v) { st.doc = +v; draw(); } });
             el.appendChild(c); el.appendChild(out); draw();
           } }
         ]

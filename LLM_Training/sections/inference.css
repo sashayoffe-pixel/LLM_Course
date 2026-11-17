@@ -1,0 +1,13 @@
+.inference-note { font-size:13px; color:var(--muted); margin:6px 0; }
+.inference-tl { display:grid; gap:2px; margin:6px 0 12px; overflow-x:auto; }
+.inference-tl .c { height:18px; min-width:12px; border-radius:2px; background:var(--panel2); }
+.inference-tl .lbl { font-size:11px; color:var(--muted); padding-right:6px; white-space:nowrap; align-self:center; }
+.inference-tlwrap { overflow-x:auto; }
+.inference-draft { display:flex; flex-wrap:wrap; gap:6px; margin:8px 0; }
+.inference-draft .tok.ok { border-color:var(--good); background:rgba(90,209,138,.18); }
+.inference-draft .tok.bad { border-color:var(--bad); background:rgba(255,93,115,.18); text-decoration:line-through; }
+.inference-draft .tok.fix { border-color:var(--accent); background:rgba(78,168,255,.18); }
+.inference-draft .tok.skip { opacity:.4; }
+.inference-ctxbar { display:flex; height:28px; border:1px solid var(--border); border-radius:6px; overflow:hidden; background:var(--panel2); }
+.inference-ctxbar span { display:block; height:100%; font-size:11px; line-height:28px; text-align:center; overflow:hidden; white-space:nowrap; }
+.inference-two { display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:12px; }

@@ -21,3 +21,9 @@
 .memory-rag-tabs { display: flex; flex-wrap: wrap; gap: 6px; margin: 6px 0; }
 .memory-rag-two { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 10px; }
 .memory-rag-score { font-variant-numeric: tabular-nums; }
+.memory-rag-two > *, .memory-rag-sel select { min-width: 0; max-width: 100%; }
+.ctl-select select { max-width: 100%; }
+.controls { max-width: 100%; }
+.ctl-input, .ctl-input input { max-width: 100%; box-sizing: border-box; }
+.ctl-select { max-width: 100%; }
+.ctl-select select { width: 100%; box-sizing: border-box; }

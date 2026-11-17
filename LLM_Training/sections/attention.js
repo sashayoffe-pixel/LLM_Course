@@ -389,9 +389,18 @@
             var ctl = api.h('div', { class: 'controls' }); el.appendChild(ctl);
             var box = api.h('div'); el.appendChild(box);
             var cur = 0;
+            var stages = ['X', 'Q·K·V', 'split', 'QKᵀ', '÷√d', 'mask', 'softmax', 'A·V'];
+            var strip = api.h('div', { class: 'attention-strip' }); el.insertBefore(strip, box);
+            var pills = stages.map(function (s, i) {
+              var p = api.h('span', { class: 'attention-stage', text: s });
+              strip.appendChild(p); if (i < stages.length - 1) strip.appendChild(api.h('span', { class: 'attention-stagearrow', text: '→' }));
+              return p;
+            });
             function build() {
               box.innerHTML = '';
-              api.stepper(box, { steps: headSteps(api, C, h), interval: 2600, start: cur, onStep: function (i) { cur = i; } });
+              api.stepper(box, { steps: headSteps(api, C, h), interval: 2600, start: cur, onStep: function (i) {
+                cur = i; pills.forEach(function (p, j) { p.classList.toggle('on', j === i); p.classList.toggle('done', j < i); });
+              } });
             }
             api.select(ctl, { label: 'Head', value: '0', options: [{ value: '0', label: 'Head 1 (Q/K/V cols 0–1)' }, { value: '1', label: 'Head 2 (Q/K/V cols 2–3)' }], onChange: function (v) { h = +v; build(); } });
             ctl.appendChild(api.h('span', { class: 'muted', html: 'Highlighted row = ' + api.tok(' the') + ' (predicts ' + api.tok(' mat') + ')' }));
