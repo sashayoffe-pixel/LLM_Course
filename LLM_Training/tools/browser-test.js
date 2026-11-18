@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // Real-browser walk of every slide and zoom level (Playwright + Chromium).
-// Usage: node tools/browser-test.js [--section=id[,id]] [--width=1440] [--no-interact] [--verbose]
+// Usage: node tools/browser-test.js [--section=id[,id]] [--width=1440] [--no-interact] [--verbose] [--he] [--strict] [--empty]
 // Checks: render errors, console errors, NaN/undefined in visible text, missing critical/dataTypes,
 // unknown types, unresolved cross-links, horizontal overflow. Interacts with steppers, sliders,
 // selects, toggles and buttons. Exit code 1 if any issue was found.
@@ -18,6 +18,7 @@ const url = 'file://' + path.join(__dirname, '..', 'index.html');
   const consoleErrs = [];
   page.on('console', m => { if (m.type() === 'error' && !/ERR_FILE_NOT_FOUND|Failed to load resource/.test(m.text())) consoleErrs.push(m.text()); });
   page.on('pageerror', e => consoleErrs.push('pageerror: ' + e.message));
+  await page.addInitScript(l => { try { localStorage.setItem('llmtraining.lang', l); } catch (e) {} }, args.he ? 'he' : 'en');
   await page.goto(url);
   await page.waitForFunction(() => window.Course && window.Course.slides && window.Course.slides.length > 0, null, { timeout: 10000 });
   await page.addStyleTag({ content: '.level, .level * { animation: none !important; transition: none !important; }' });
@@ -132,6 +133,6 @@ const url = 'file://' + path.join(__dirname, '..', 'index.html');
   const uniq = [...new Set(issues)];
   if (args.verbose || uniq.length) uniq.forEach(x => console.log('✗ ' + x));
   if (pendingLinks.size) console.log('(info) links to sections not yet loaded: ' + [...pendingLinks].join(', ') + '  — use --strict to count them');
-  console.log('\nWalked ' + nLevels + ' zoom levels' + (only ? ' in ' + only.join(',') : '') + ' at ' + width + 'px, ' + nInteractions + ' interactions, ' + uniq.length + ' issue(s).');
+  console.log('\nWalked ' + nLevels + ' zoom levels' + (only ? ' in ' + only.join(',') : '') + ' at ' + width + 'px' + (args.he ? ' in Hebrew' : '') + ', ' + nInteractions + ' interactions, ' + uniq.length + ' issue(s).');
   process.exit(uniq.length ? 1 : 0);
 })().catch(e => { console.error(e); process.exit(2); });
