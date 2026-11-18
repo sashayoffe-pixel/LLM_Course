@@ -1,7 +1,7 @@
 # LLM Training — how large language models and agents work
 
 An interactive, offline web course for engineers who are not ML specialists:
-**23 sections, 119 slides, 358 zoom levels.**
+**23 sections, 120 slides, 361 zoom levels — in English and Hebrew.**
 
 * **Part I — How LLMs Work:** big picture and master architecture map, tokenization, embeddings, the transformer block,
   attention (full worked numeric example), FFN/MoE, output and sampling, training, ClearML, inference and the KV cache,
@@ -22,6 +22,24 @@ The first visit saves every course file in your browser's cache (a service worke
 **✓ Offline ready**). After that the course opens and works with no connection. Every online visit fetches the
 latest version first and saves it to the cache again, so the offline copy stays current. On a phone or in Chrome/Edge
 you can also "Install" / "Add to Home Screen" to get an app icon.
+
+## Hebrew (עברית)
+Press **עברית** in the top bar to switch the whole course to Hebrew (press **English** to switch back; the choice is
+remembered). The layout flips to right-to-left, while diagrams, matrices, code and formulas stay left-to-right, and
+← / → follow the reading direction. Content is written once in English: `core/i18n.js` turns each rendered text block
+into a key (inline tags → `<0>…</0>`, numbers → `{#}`) and looks it up in `i18n/he/<section>.js`, so numbers that change
+with sliders are translated too. Coverage tools:
+```bash
+node tools/i18n-extract.js --write   # walk every slide in Hebrew; list untranslated keys in i18n/todo/<section>.json
+node tools/i18n-check.js             # every translation keeps its key's tags and {#} placeholders
+node tools/browser-test.js --strict --he [--width=390]   # full walk in Hebrew / right-to-left
+```
+Last run: 5,959 dictionary entries, 0 untranslated keys, 0 issues at 1440 and 390 px.
+
+## The toy model
+Hand calculations use a **toy model** with the same architecture as the real one but tiny sizes (d_model 4, 2 heads of
+d_head 2, FFN 8, one layer). It is introduced on its own slide ("Meet the toy model") before it is first used, and the
+**🧸 Toy model** button in the top bar shows its sizes and input matrix X on any slide.
 
 ## Run it
 

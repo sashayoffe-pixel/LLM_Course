@@ -63,6 +63,15 @@ const url = 'file://' + path.join(__dirname, '..', 'index.html');
             if (!over.length) over.push('content.scrollWidth ' + content.scrollWidth + ' > ' + content.clientWidth);
           }
           if (stage.scrollWidth > stage.clientWidth + 2) over.push('stage overflow ' + stage.scrollWidth + ' > ' + stage.clientWidth);
+          if (document.documentElement.scrollWidth > innerWidth + 1) {
+            const off = [...document.querySelectorAll('body *')].filter(el => { if (el.closest('.toc')) return false; const r = el.getBoundingClientRect(); return r.width > 0 && (r.left < -1 || r.right > innerWidth + 1); }).slice(0, 2).map(el => el.tagName.toLowerCase() + '.' + String(el.className).split(' ')[0]);
+            over.push('page wider than window (' + document.documentElement.scrollWidth + ' > ' + innerWidth + ')' + (off.length ? ': ' + off.join(', ') : ''));
+          }
+          if (document.documentElement.dir === 'rtl') {
+            const cr = content.getBoundingClientRect();
+            const inScroller = el => { for (let a = el.parentElement; a && a !== content; a = a.parentElement) { const o = getComputedStyle(a).overflowX; if (o === 'auto' || o === 'scroll' || o === 'hidden') return true; } return false; };
+            content.querySelectorAll('*').forEach(el => { const r = el.getBoundingClientRect(); if (r.width > 0 && r.left < cr.left - 2 && !el.closest('.mx-scroll,.tbl-wrap,pre,svg') && !inScroller(el) && over.length < 3) over.push('RTL overflow left: ' + el.tagName.toLowerCase() + '.' + String(el.className).split(' ')[0] + ' ' + Math.round(cr.left - r.left) + 'px'); });
+          }
           const renderErr = [...document.querySelectorAll('.render-error')].map(e => e.innerText.slice(0, 200));
           const unknown = document.querySelectorAll('.dt-unknown').length;
           const sec = Course.slides[Course.state.idx].section.id;

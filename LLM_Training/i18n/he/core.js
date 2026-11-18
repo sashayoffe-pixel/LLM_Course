@@ -4,8 +4,8 @@ Course.i18n.add('he', {
   // top bar & shell
   '<0>◆</0> LLM Training': '<0>◆</0> הדרכת LLM',
   'Table of contents': 'תוכן העניינים',
-  'What is the toy model? (opens a summary)': 'מהו מודל הצעצוע? (פותח סיכום)',
-  'Toy model': 'מודל הצעצוע',
+  'What is the toy model? (opens a summary)': 'מהו מודל ה-toy? (פותח סיכום)',
+  'Toy model': 'מודל ה-toy',
   'Switch to English': 'Switch to English',
   'English': 'English',
   '{#} / {#} slides visited': '{#} / {#} שקפים נצפו',
@@ -52,12 +52,12 @@ Course.i18n.add('he', {
   '● Offline — cached copy': '● ללא רשת — עותק שמור',
   'Every course file is saved in this browser’s cache and refreshed on each online visit.': 'כל קובצי הקורס נשמרים במטמון של הדפדפן ומתעדכנים בכל ביקור מקוון.',
   // toy-model summary popover
-  'Toy model summary': 'סיכום מודל הצעצוע',
+  'Toy model summary': 'סיכום מודל ה-toy',
   'Close (Esc)': 'סגירה (Esc)',
-  '🧸 The toy model': '🧸 מודל הצעצוע',
+  '🧸 The toy model': '🧸 מודל ה-toy',
   'A miniature transformer with the <0>same architecture</0> as the 8B reference model, shrunk so every number fits on screen. Its weights are made up; the arithmetic is real.':
     'טרנספורמר מיניאטורי עם <0>אותה ארכיטקטורה</0> כמו מודל הייחוס בגודל 8B, מוקטן כך שכל מספר נכנס למסך. המשקלים שלו מומצאים; החישובים אמיתיים.',
-  'toy': 'צעצוע',
+  'toy': 'toy',
   '8B reference': 'מודל ייחוס 8B',
   'tokens in the prompt (seq_len)': 'טוקנים בפרומפט (seq_len)',
   'up to {#}': 'עד {#}',

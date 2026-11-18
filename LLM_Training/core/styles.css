@@ -328,3 +328,14 @@ pre.code code { background: none; border: 0; padding: 0; font-size: inherit; whi
 [dir=rtl] .blocks, [dir=rtl] .step-ctrl { direction: ltr; }
 [dir=rtl] .blk, [dir=rtl] .edge-label, [dir=rtl] .blk-caption { direction: rtl; }
 [dir=rtl] .bar-label { text-align: left; }
+/* top bar must fit small phones (Hebrew labels are longer) */
+.topbar > * { flex-shrink: 0; }
+.topbar .progress { flex-shrink: 1; }
+.brand { min-width: 0; overflow: hidden; text-overflow: ellipsis; flex-shrink: 1; }
+@media (max-width: 560px) {
+  .topbar { gap: 8px; padding: 8px 10px; }
+  .counter { display: none; }
+  .brand { font-size: .85rem; }
+  .progress { min-width: 24px; }
+  .toy-btn, .lang-btn { padding: 4px 8px; }
+}

@@ -160,7 +160,7 @@ Course.i18n.add('he', {
   "Since decode is memory-bandwidth-bound, fewer bytes per weight usually also means faster decoding.": "מכיוון ש-decode הוא memory-bandwidth-bound, פחות בייטים למשקל בדרך כלל אומר גם decode מהיר יותר.",
   "The price is rounding error; careful schemes (per-group scales, outlier handling) keep quality loss small, but it is not zero.": "המחיר הוא שגיאת עיגול; שיטות קפדניות (scales לכל קבוצה, טיפול ב-outliers) שומרות על ירידת איכות קטנה, אך היא אינה אפס.",
   "Symmetric INT8: <0/>, <1/>, dequantised weight = <2/>.": "INT8 סימטרי: <0/>, <1/>, משקל אחרי dequantization = <2/>.",
-  "One outlier weight inflates the scale and hurts all the others — hence per-group scales (e.g. {#} scale per {#}–{#} weights).": "משקל חריג אחד (outlier) מנפח את ה-scale ופוגע בכל האחרים — ולכן משתמשים ב-scales לכל קבוצה (למשל scale אחד לכל {#}–{#} משקלים).",
+  "One outlier weight inflates the scale and hurts all the others — hence per-group scales (e.g. {#} scale per {#}–{#} weights).": "משקל חריג אחד (outlier) מנפח את ה-scale ופוגע בכל האחרים — ולכן משתמשים ב-scales לכל קבוצה (למשל {#} scale לכל {#}–{#} משקלים).",
   "Quality impact depends on model, method and task; INT8 is often near-lossless, INT4 shows some degradation (hedge: verify on your task).": "ההשפעה על האיכות תלויה במודל, בשיטה ובמשימה; INT8 הוא לרוב כמעט ללא אובדן, ל-INT4 יש מעט ירידה (בזהירות: אמתו על המשימה שלכם).",
   "weights w": "משקלים w",
   "scale": "scale",
