@@ -323,8 +323,7 @@ class S2(TypedDict):
             ];
             var idx = -1, msgs = [], newFrom = 0, done = [];
             var ctl = api.h('div', { class: 'controls' }); el.appendChild(ctl);
-            var g = api.grid(el, 300);
-            var left = api.h('div'), right = api.h('div'); g.appendChild(left); g.appendChild(right);
+            var left = api.h('div'), right = api.h('div'); el.appendChild(left); el.appendChild(right);
             var gd = box(left, svgGraph(REACT, 'lgr2'));
             var info = api.h('div'); left.appendChild(info);
             var stateBox = api.h('div'); right.appendChild(stateBox);

@@ -150,6 +150,7 @@ textarea { width: 100%; font-family: var(--mono); }
 .blk-label { font-weight: 650; font-size: .9rem; overflow-wrap: anywhere; }
 .blk-sub { color: var(--muted); font-size: .76rem; margin-top: 2px; overflow-wrap: anywhere; }
 .blk-meta { margin-top: 4px; display: flex; flex-wrap: wrap; justify-content: center; gap: 3px; align-items: center; }
+.blk-meta .shape { white-space: normal; overflow-wrap: anywhere; }
 .blk-go { font-size: .68rem; color: var(--accent); margin-top: 3px; opacity: .75; }
 .blk.clickable { cursor: pointer; }
 .blk.clickable:hover, .blk.clickable:focus { transform: translateY(-2px); border-color: var(--accent); outline: none; box-shadow: 0 4px 16px rgba(61,139,253,.2); }
