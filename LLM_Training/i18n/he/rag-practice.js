@@ -191,4 +191,6 @@ Course.i18n.add('he', {
   "<0>Illustrative values.</0> Tiny labelled set on the toy corpus from the previous slide. Real eval sets need many more questions, and the same recall@k idea applies.": "<0>ערכים להמחשה.</0> קבוצה קטנה מתויגת על הקורפוס ה-toy מהשקף הקודם. קבוצות הערכה אמיתיות צריכות הרבה יותר שאלות, ואותו רעיון של recall@k חל.",
   "Deepest level reached — next slide → <0>ReAct: a coding agent fixes a failing test</0>": "הגעתם לרמה העמוקה ביותר — השקף הבא ← <0>ReAct: coding agent מתקן test שנכשל</0>",
   "recall@{#} (expected chunk in top-4)": "recall@{#} (chunk צפוי ב-top-4)",
+  "mini RAG": "mini RAG",
+  "hybrid search, reranking, agentic RAG": "hybrid search, reranking, agentic RAG",
 });
