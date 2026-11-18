@@ -1,0 +1,10 @@
+{
+  "name": "LLM Training — How LLMs and Agents Work",
+  "short_name": "LLM Training",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#0d1117",
+  "theme_color": "#121823",
+  "icons": [{ "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }]
+}

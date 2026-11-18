@@ -787,6 +787,7 @@
     if (!Course.slides.length) { dom.content.innerHTML = '<p>No sections loaded.</p>'; return; }
     var r = location.hash ? resolve(location.hash) : null;
     show(r ? r.idx : 0, r ? r.level : 0);
+    setupOffline();
     window.addEventListener('hashchange', function () { if (suppressHash) return; var q = resolve(location.hash); if (q) show(q.idx, q.level); });
   }
 
@@ -798,7 +799,7 @@
     var header = h('header', { class: 'topbar' },
       h('button', { class: 'btn toc-toggle', title: 'Table of contents', onclick: function () { document.body.classList.toggle('toc-open'); document.body.classList.toggle('toc-hidden'); } }, '☰'),
       h('a', { class: 'brand', href: '#', onclick: function (e) { e.preventDefault(); show(0, 0); } }, h('span', { class: 'brand-mark', text: '◆' }), ' LLM Training'),
-      h('div', { class: 'progress' }, dom.progress), dom.counter);
+      h('div', { class: 'progress' }, dom.progress), dom.counter, dom.offline = h('span', { class: 'offline-pill', hidden: true }));
     dom.toc = h('nav', { class: 'toc', 'aria-label': 'Table of contents' });
     dom.head = h('div', { class: 'slide-head' });
     dom.content = h('div', { class: 'slide-content' });
@@ -832,6 +833,23 @@
       else show(state.idx, parseInt(a.getAttribute('data-zoom'), 10) || 0, { keepScroll: true });
     });
   }
+
+  // ------------------------------------------------------------------ offline (service worker, http/https only)
+  function setupOffline() {
+    var pill = dom.offline;
+    var say = function (txt, cls, title) { if (!pill) return; pill.hidden = false; pill.textContent = txt; pill.className = 'offline-pill ' + (cls || ''); pill.title = title || ''; };
+    try {
+      if (!/^https?:$/.test(location.protocol) || !('serviceWorker' in navigator)) return; // file:// already works offline
+      navigator.serviceWorker.register('sw.js').then(function () { return navigator.serviceWorker.ready; }).then(function () {
+        Course.offlineReady = true;
+        say(navigator.onLine ? '✓ Offline ready' : '● Offline — cached copy', navigator.onLine ? 'ok' : 'off',
+          'Every course file is saved in this browser’s cache and refreshed on each online visit.');
+      }).catch(function () { /* sandboxed or unsupported: course still works online */ });
+      window.addEventListener('offline', function () { if (Course.offlineReady) say('● Offline — cached copy', 'off'); });
+      window.addEventListener('online', function () { if (Course.offlineReady) say('✓ Offline ready', 'ok'); });
+    } catch (e) { /* ignore */ }
+  }
+  Course.setupOffline = setupOffline;
 
   window.addEventListener('error', function (e) { Course.errors.push('window.onerror: ' + (e.message || e)); });
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);

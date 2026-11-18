@@ -31,6 +31,10 @@ hr { border: 0; border-top: 1px solid var(--border); margin: 1em 0; }
 .progress { flex: 1; height: 6px; background: var(--panel2); border-radius: 4px; overflow: hidden; min-width: 60px; }
 .progress-fill { height: 100%; background: linear-gradient(90deg, var(--accent2), var(--t-probability)); transition: width .3s; }
 .counter { color: var(--muted); font-variant-numeric: tabular-nums; font-size: .85rem; white-space: nowrap; }
+.offline-pill { font-size: .72rem; padding: 1px 8px; border-radius: 12px; border: 1px solid var(--border2); color: var(--muted); white-space: nowrap; }
+.offline-pill.ok { color: var(--good); border-color: rgba(90,209,138,.5); }
+.offline-pill.off { color: var(--warn); border-color: rgba(242,184,75,.6); }
+@media (max-width: 560px) { .offline-pill { display: none; } }
 .layout { flex: 1; display: flex; min-height: 0; }
 .main-col { flex: 1; display: flex; flex-direction: column; min-width: 0; }
 .stage { flex: 1; overflow-y: auto; overflow-x: hidden; padding: 16px 22px 26px; }

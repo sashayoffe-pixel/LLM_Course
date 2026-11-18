@@ -48,5 +48,10 @@ for (const f of files) {
 }
 const seen = {};
 all.forEach(s => { if (seen[s.id]) { console.log('✗ duplicate section id ' + s.id); problems++; } seen[s.id] = 1; });
+try {
+  const sw = require('./build-sw.js');
+  if (fs.readFileSync(path.join(root, 'sw.js'), 'utf8') !== sw.render()) { console.log('✗ sw.js precache is out of date — run: node tools/build-sw.js'); problems++; }
+  else console.log('✓ sw.js precache up to date (' + sw.list().length + ' files)');
+} catch (e) { console.log('✗ sw.js check failed: ' + e.message); problems++; }
 console.log(problems ? '\n' + problems + ' problem(s)' : '\nAll good.');
 process.exit(problems ? 1 : 0);

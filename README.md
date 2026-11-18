@@ -1,3 +1,5 @@
+> **New (English): [LLM Training — how LLMs and agents work](https://sashayoffe-pixel.github.io/LLM_Course/LLM_Training/)** · works offline after the first visit · source in [`LLM_Training/`](LLM_Training/)
+
 # LLM Academy — קורס אינטראקטיבי על LLM ומה שסביבו
 
 קורס web אינטראקטיבי בעברית שמלמד את המושגים המרכזיים בבניית מערכות מבוססות מודלי שפה גדולים, ואת הקשר של כל אחד מהם ל-LLM:
