@@ -643,6 +643,7 @@
       var c = h('input', { type: 'checkbox', checked: !!spec.value });
       c.addEventListener('change', function () { try { spec.onChange && spec.onChange(c.checked); } catch (e) { report(e); } });
       el.appendChild(h('label', { class: 'ctl ctl-toggle' }, c, h('span', { class: 'ctl-label', html: spec.label || '' })));
+      if (spec.init && spec.onChange) spec.onChange(c.checked);
       return c;
     }
     // spec: { label, value, placeholder, onInput(v), multiline }
