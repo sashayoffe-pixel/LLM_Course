@@ -320,5 +320,8 @@ Course.i18n.add('he', {
  "<0>{#}</0> Client → server: tools/list": "<0>{#}</0> Client ← server: tools/list",
  "<0>{#}</0> Server → client: the tool catalogue": "<0>{#}</0> Server ← client: קטלוג הכלים",
  "<0>{#}</0> Client → server: tools/call (the model chose it)": "<0>{#}</0> Client ← server: tools/call (המודל בחר בו)",
- "<0>{#}</0> Server → client: result": "<0>{#}</0> Server ← client: תוצאה"
+ "<0>{#}</0> Server → client: result": "<0>{#}</0> Server ← client: תוצאה",
+ "prompt injection": "prompt injection",
+ "\"Summarise this page\"": "\"Summarise this page\"",
+ "name": "name"
 });

@@ -250,5 +250,15 @@
  "attention × layers": "",
  "FFN × layers": "",
  "d_model and heads are fixed here ({#} = {#} × {#}). Rule of thumb: per layer ≈ {#}·d² for a classic GPT block; Llama-style blocks differ because of GQA and the {#}-matrix SwiGLU FFN.": "",
- "Deepest level reached — next slide → <0>Query, Key, Value: how tokens look at each other</0>": ""
+ "Deepest level reached — next slide → <0>Query, Key, Value: how tokens look at each other</0>": "",
+ "x ← x + Sublayer(RMSNorm(x))": "",
+ "embedding": "",
+ "attention": "",
+ "backprop": "",
+ "The": "",
+ "␣cat": "",
+ "␣sat": "",
+ "␣on": "",
+ "␣the": "",
+ "vocab": ""
 }

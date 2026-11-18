@@ -261,5 +261,7 @@ Course.i18n.add('he', {
  "<0>tool_use</0>": "<0>tool_use</0>",
  "<0>STOP: token budget ({#})</0>": "<0>עצירה: תקציב טוקנים ({#})</0>",
  "Result: <0>harness stopped it: token budget ({#})</0> - the task is left unfinished; a good harness returns a partial result or asks a human.": "תוצאה: <0>ה-harness עצר אותו: תקציב טוקנים ({#})</0> - המשימה נשארה לא גמורה; harness טוב מחזיר תוצאה חלקית או פונה לאדם.",
- "Deepest level reached — next slide → <0>Tool definitions: a name, a description, a JSON schema</0>": "הגעתם לרמה העמוקה ביותר — השקף הבא ← <0>הגדרות כלים: שם, תיאור ו-JSON schema</0>"
+ "Deepest level reached — next slide → <0>Tool definitions: a name, a description, a JSON schema</0>": "הגעתם לרמה העמוקה ביותר — השקף הבא ← <0>הגדרות כלים: שם, תיאור ו-JSON schema</0>",
+ "assistant (tool_use)": "assistant (tool_use)",
+ "prompt caching": "prompt caching"
 });

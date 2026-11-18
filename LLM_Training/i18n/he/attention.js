@@ -321,4 +321,6 @@ Course.i18n.add('he', {
  "<0/>linear n·{#} (for comparison)": "<0/>לינארי n·{#} (להשוואה)",
  "Double n → {#}× attention work. This is why long-context models rely on tricks such as FlashAttention (tiles, never materialises the full n×n matrix), sliding-window or sparse attention — trade-offs differ by model.": "הכפלת n → פי {#} עבודת attention. לכן מודלים עם הקשר ארוך נשענים על טריקים כמו FlashAttention (tiles, לעולם לא ממשש את כל מטריצת n×n), sliding-window או sparse attention — ה-trade-offs שונים בין מודלים.",
  "Deepest level reached — next slide → <0>The feed-forward network: per-token compute</0>": "הגענו לרמה העמוקה ביותר — השקף הבא ← <0>ה-feed-forward network: חישוב לכל token</0>",
+ "Analogy": "אנלוגיה",
+ "attention output": "פלט attention",
 });

@@ -189,4 +189,7 @@ Course.i18n.add('he', {
  "Weights in memory (BF16): ≈ {#} GiB vs {#} GiB dense. Per-token compute scales with <0>active</0> parameters. See <1>quantization</1> for shrinking the memory side.": "משקלים בזיכרון (BF16): ≈ {#} GiB לעומת {#} GiB ב-dense. חישוב לכל token גדל עם הפרמטרים <0>הפעילים</0>. ראו <1>quantization</1> להקטנת צד הזיכרון.",
  "<0>Illustrative values.</0> Attention, embeddings and norms are copied from the dense reference; only the FFN is multiplied. Real MoEs (Mixtral, DeepSeek, …) differ in details such as shared experts and fine-grained experts.": "<0>ערכים להמחשה.</0> Attention, embeddings ו-norms מועתקים מייחוס ה-dense; רק ה-FFN מוכפל. MoEs אמיתיים (Mixtral, DeepSeek, …) שונים בפרטים כמו shared experts ו-fine-grained experts.",
  "Deepest level reached — next slide → <0>From hidden state to a probability distribution</0>": "הגענו לרמה העמוקה ביותר — השקף הבא ← <0>מ-hidden state להתפלגות הסתברות</0>",
+ "Sizes": "גדלים",
+ "▼ Dive in: <0>Sizes</0>": "▼ לעומק: <0>גדלים</0>",
+ "\" cat\"": "\" cat\"",
 });

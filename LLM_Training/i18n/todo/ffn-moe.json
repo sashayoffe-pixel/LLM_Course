@@ -188,5 +188,8 @@
  "active = shared + layers × k × FFN = {#} B ({#}% of total)": "",
  "Weights in memory (BF16): ≈ {#} GiB vs {#} GiB dense. Per-token compute scales with <0>active</0> parameters. See <1>quantization</1> for shrinking the memory side.": "",
  "<0>Illustrative values.</0> Attention, embeddings and norms are copied from the dense reference; only the FFN is multiplied. Real MoEs (Mixtral, DeepSeek, …) differ in details such as shared experts and fine-grained experts.": "",
- "Deepest level reached — next slide → <0>From hidden state to a probability distribution</0>": ""
+ "Deepest level reached — next slide → <0>From hidden state to a probability distribution</0>": "",
+ "Sizes": "",
+ "▼ Dive in: <0>Sizes</0>": "",
+ "\" cat\"": ""
 }

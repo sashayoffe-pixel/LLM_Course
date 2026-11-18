@@ -320,5 +320,7 @@
  "<0/>score entries n² (millions)": "",
  "<0/>linear n·{#} (for comparison)": "",
  "Double n → {#}× attention work. This is why long-context models rely on tricks such as FlashAttention (tiles, never materialises the full n×n matrix), sliding-window or sparse attention — trade-offs differ by model.": "",
- "Deepest level reached — next slide → <0>The feed-forward network: per-token compute</0>": ""
+ "Deepest level reached — next slide → <0>The feed-forward network: per-token compute</0>": "",
+ "Analogy": "",
+ "attention output": ""
 }

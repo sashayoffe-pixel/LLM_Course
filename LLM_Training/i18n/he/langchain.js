@@ -150,5 +150,7 @@ Course.i18n.add('he', {
  "Custom control flow": "Control flow מותאם",
  "use LangGraph directly": "להשתמש ב-LangGraph ישירות",
  "plain code": "קוד רגיל",
- "Deepest level reached — next slide → <0>Memory types: what an agent can \"remember\"</0>": "הגעתם לרמה העמוקה ביותר — השקף הבא ← <0>סוגי זיכרון: מה agent יכול \"לזכור\"</0>"
+ "Deepest level reached — next slide → <0>Memory types: what an agent can \"remember\"</0>": "הגעתם לרמה העמוקה ביותר — השקף הבא ← <0>סוגי זיכרון: מה agent יכול \"לזכור\"</0>",
+ "Step by step": "צעד אחר צעד",
+ "▼ Dive in: <0>Step by step</0>": "▼ העמקה: <0>צעד אחר צעד</0>"
 });

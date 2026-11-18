@@ -320,5 +320,7 @@
  "<0>{#}</0> Client → server: tools/list": "",
  "<0>{#}</0> Server → client: the tool catalogue": "",
  "<0>{#}</0> Client → server: tools/call (the model chose it)": "",
- "<0>{#}</0> Server → client: result": ""
+ "<0>{#}</0> Server → client: result": "",
+ "prompt injection": "",
+ "\"Summarise this page\"": ""
 }
