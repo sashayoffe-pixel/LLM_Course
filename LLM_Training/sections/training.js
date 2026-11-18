@@ -501,6 +501,7 @@
           var c = ctl(api), out = api.h('div');
           el.appendChild(c); el.appendChild(out);
           api.toggle(c, { label: 'apply loss mask (train only on assistant tokens)', value: true, onChange: draw });
+          draw(true);
           function draw(masked) {
             if (masked == null) masked = true;
             var rows = [], sum = 0, n = 0;

@@ -1,0 +1,15 @@
+/* transformer-block section */
+.transformer-block-svg { width: 100%; height: auto; display: block; max-width: 720px; }
+.transformer-block-flow { stroke-dasharray: 10 8; animation: transformer-block-dash 1.2s linear infinite; }
+@keyframes transformer-block-dash { to { stroke-dashoffset: -18; } }
+.transformer-block-svglbl { fill: #9aa6ba; font: 13px sans-serif; }
+.transformer-block-svgtxt { fill: #e8eef7; font: 13px var(--mono, monospace); }
+.transformer-block-svgsm { fill: #7d889c; font: 11px sans-serif; }
+.blk.transformer-block-add { border-style: dashed; }
+.transformer-block-early { color: #4ea8ff; }
+.transformer-block-mid { color: #b98cff; }
+.transformer-block-late { color: #5ad18a; }
+.blk.transformer-block-b-early { box-shadow: inset 0 3px 0 #4ea8ff; }
+.blk.transformer-block-b-mid { box-shadow: inset 0 3px 0 #b98cff; }
+.blk.transformer-block-b-late { box-shadow: inset 0 3px 0 #5ad18a; }
+.transformer-block-total { margin: 6px 0 10px; }
