@@ -472,4 +472,5 @@ Course.i18n.add('he', {
  "Rule of thumb: <0>let the LLM handle ambiguity, let code handle guarantees.</0> See <1>LLM → agent</1> and <2>tool calling</2>.": "כלל אצבע: <0>תנו ל-LLM לטפל בעמימות, ולקוד לטפל בערבויות.</0> ראו <1>LLM ← agent</1> ו-<2>tool calling</2>.",
  "Deepest level reached — next slide → <0>Why tokens? Between characters and words</0>": "הגעתם לרמה העמוקה ביותר — השקף הבא ← <0>למה tokens? בין תווים למילים</0>",
  "<0>Best fit: LLM + code (agent).</0> LLM chooses; code executes and validates (Part II).": "<0>ההתאמה הטובה ביותר: LLM + קוד (agent).</0> ה-LLM בוחר; הקוד מבצע ומאמת (חלק II).",
+ "TOC": "TOC",
 });

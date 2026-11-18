@@ -215,4 +215,5 @@ Course.i18n.add('he', {
  "{#} tokens → [{#} × {#}]": "{#} tokens ← [{#} × {#}]",
  "The same shape [seq_len × d_model] flows through every block — see <0>the residual stream</0>.": "אותו shape ‏[seq_len × d_model] זורם דרך כל בלוק — ראו <0>ה-residual stream</0>.",
  "Deepest level reached — next slide → <0>Decoder-only architecture: a stack of {#} identical blocks</0>": "הגעתם לרמה העמוקה ביותר — השקף הבא ← <0>ארכיטקטורת decoder-only: ערימה של {#} בלוקים זהים</0>",
+ "{#} rad": "{#} rad",
 });
