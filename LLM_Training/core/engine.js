@@ -282,7 +282,7 @@
     renderFooter();
     dom.rendered = true;
     if (slideChanged && !opts.keepScroll) dom.stage.scrollTop = 0;
-    document.title = entry.slide.title + ' · LLM Training';
+    document.title = (Course.t ? Course.t(entry.slide.title) : entry.slide.title) + ' · LLM Training';
   }
   Course.show = show;
 
@@ -296,12 +296,12 @@
         class: 'crumb' + (i === level ? ' on' : ''), 'data-level': i,
         title: 'Zoom level ' + (i + 1) + ' of ' + lv.length,
         onclick: function () { show(state.idx, i); }
-      }, h('span', { class: 'crumb-n', text: String(i + 1) }), ' ' + L.name));
+      }, h('span', { class: 'crumb-n', text: String(i + 1) }), ' ', h('span', { class: 'crumb-name', text: L.name })));
     });
     dom.head.appendChild(h('div', { class: 'head-top' },
       h('div', { class: 'eyebrow' },
         h('span', { class: 'part-tag', text: entry.section.part === 'A' ? 'Appendix' : 'Part ' + entry.section.part }),
-        ' ', entry.section.title, h('span', { class: 'slide-num', text: '  ·  slide ' + (entry.sIdx + 1) + '/' + entry.section.slides.length })),
+        ' ', h('span', { class: 'sec-name', text: entry.section.title }), ' · ', h('span', { class: 'slide-num' }, h('span', { text: 'slide' }), ' ' + (entry.sIdx + 1) + '/' + entry.section.slides.length)),
       h('div', { class: 'zoom-btns' },
         h('button', { class: 'btn zoom-out', disabled: level === 0, title: 'Zoom out (↑)', onclick: zoomOut }, '▲ Zoom out'),
         h('button', { class: 'btn zoom-in primary', disabled: level >= lv.length - 1, title: 'Dive in (↓)', onclick: zoomIn }, '▼ Dive in'))));
@@ -376,7 +376,7 @@
       box.appendChild(h('button', { class: 'toc-sec-title', onclick: function () {
         if (box.classList.contains('open')) { box.classList.remove('open'); box.classList.remove('pinned'); }
         else { box.classList.add('open'); box.classList.add('pinned'); }
-      } }, h('span', { class: 'toc-caret', text: '▸' }), ' ', sec.title));
+      } }, h('span', { class: 'toc-caret', text: '▸' }), ' ', h('span', { class: 'toc-sec-name', text: sec.title })));
       var ul = h('div', { class: 'toc-slides' });
       sec.slides.forEach(function (sl) {
         var e = Course.slides.filter(function (x) { return x.section === sec && x.slide === sl; })[0];
@@ -799,7 +799,10 @@
     var header = h('header', { class: 'topbar' },
       h('button', { class: 'btn toc-toggle', title: 'Table of contents', onclick: function () { document.body.classList.toggle('toc-open'); document.body.classList.toggle('toc-hidden'); } }, '☰'),
       h('a', { class: 'brand', href: '#', onclick: function (e) { e.preventDefault(); show(0, 0); } }, h('span', { class: 'brand-mark', text: '◆' }), ' LLM Training'),
-      h('div', { class: 'progress' }, dom.progress), dom.counter, dom.offline = h('span', { class: 'offline-pill', hidden: true }));
+      h('div', { class: 'progress' }, dom.progress), dom.counter, dom.offline = h('span', { class: 'offline-pill', hidden: true }),
+      h('button', { class: 'btn toy-btn', title: 'What is the toy model? (opens a summary)', onclick: toggleToy }, h('span', { text: '🧸' }), ' ', h('span', { class: 'toy-btn-label', text: 'Toy model' })),
+      Course.i18n ? h('button', { class: 'btn lang-btn', title: Course.i18n.lang === 'he' ? 'Switch to English' : 'החלפה לעברית',
+        onclick: function () { Course.i18n.toggle(); } }, Course.i18n.lang === 'he' ? 'English' : 'עברית') : null);
     dom.toc = h('nav', { class: 'toc', 'aria-label': 'Table of contents' });
     dom.head = h('div', { class: 'slide-head' });
     dom.content = h('div', { class: 'slide-content' });
@@ -807,32 +810,70 @@
     dom.stage = h('main', { class: 'stage' }, dom.head, h('div', { class: 'slide-body' }, dom.content, dom.panel));
     dom.backLabel = h('span', { class: 'nav-label' });
     dom.nextLabel = h('span', { class: 'nav-label' });
-    dom.back = h('button', { class: 'btn nav-back', onclick: prev }, '← Back', dom.backLabel);
-    dom.next = h('button', { class: 'btn nav-next primary', onclick: next }, dom.nextLabel, 'Next →');
+    dom.back = h('button', { class: 'btn nav-back', onclick: prev }, h('span', { class: 'nav-word', text: '← Back' }), dom.backLabel);
+    dom.next = h('button', { class: 'btn nav-next primary', onclick: next }, dom.nextLabel, h('span', { class: 'nav-word', text: 'Next →' }));
     var footer = h('footer', { class: 'navbar' }, dom.back,
       h('span', { class: 'keys-hint', html: '<kbd>←</kbd><kbd>→</kbd> slides · <kbd>↓</kbd><kbd>↑</kbd> zoom' }), dom.next);
     app.appendChild(header);
     app.appendChild(h('div', { class: 'layout' }, dom.toc, h('div', { class: 'main-col' }, dom.stage, footer)));
     app.appendChild(h('div', { class: 'toc-scrim', onclick: closeTocMobile }));
 
+    if (dom.listening) return;
+    dom.listening = true;
     document.addEventListener('keydown', function (e) {
       if (e.altKey || e.ctrlKey || e.metaKey) return;
+      if (e.key === 'Escape') { closeToy(); return; }
+      var rtl = document.documentElement.dir === 'rtl';
       var t = e.target, tag = t && t.tagName;
       if (tag === 'INPUT' || tag === 'SELECT' || tag === 'TEXTAREA' || (t && t.isContentEditable)) return;
-      if (e.key === 'ArrowRight') { e.preventDefault(); next(); }
-      else if (e.key === 'ArrowLeft') { e.preventDefault(); prev(); }
+      if (e.key === 'ArrowRight') { e.preventDefault(); rtl ? prev() : next(); }
+      else if (e.key === 'ArrowLeft') { e.preventDefault(); rtl ? next() : prev(); }
       else if (e.key === 'ArrowDown') { e.preventDefault(); zoomIn(); }
       else if (e.key === 'ArrowUp') { e.preventDefault(); zoomOut(); }
     });
     // delegated cross-links: <a data-goto="section/slide">, <x data-zoom="2">
-    app.addEventListener('click', function (e) {
+    document.addEventListener('click', function (e) {
+      var app = document.getElementById('app');
       var a = e.target.closest && e.target.closest('[data-goto],[data-zoom]');
-      if (!a || !app.contains(a)) return;
+      if (!a || !(app.contains(a) || (dom.toyPop && dom.toyPop.contains(a)))) return;
       e.preventDefault();
+      closeToy();
       if (a.hasAttribute('data-goto')) go(a.getAttribute('data-goto'));
       else show(state.idx, parseInt(a.getAttribute('data-zoom'), 10) || 0, { keepScroll: true });
     });
   }
+
+  // Rebuild the whole shell (used when the language changes).
+  Course.rebuild = function () {
+    dom.tocBuilt = false; dom.rendered = false;
+    buildShell(); show(state.idx, state.level); setupOffline();
+  };
+
+  // ------------------------------------------------------------------ toy-model summary popover
+  function toggleToy() { if (dom.toyPop) closeToy(); else openToy(); }
+  function closeToy() { if (dom.toyPop) { dom.toyPop.remove(); dom.toyPop = null; } }
+  function openToy() {
+    var t = EX.toy, X = EX.toyX;
+    var rows = X.map(function (r, i) { return '<tr><th>' + tokText(EX.tokens[i].text) + '</th>' + r.map(function (v) { return '<td>' + fmt(v, 2) + '</td>'; }).join('') + '</tr>'; }).join('');
+    var pop = h('div', { class: 'toy-pop', role: 'dialog', 'aria-label': 'Toy model summary' },
+      h('button', { class: 'toy-close', title: 'Close (Esc)', onclick: closeToy }, '✕'),
+      h('h3', { text: '🧸 The toy model' }),
+      h('p', { html: 'A miniature transformer with the <b>same architecture</b> as the 8B reference model, shrunk so every number fits on screen. Its weights are made up; the arithmetic is real.' }),
+      h('table', { class: 'toy-dims', html:
+        '<tr><th></th><th>toy</th><th>8B reference</th></tr>' +
+        '<tr><td>tokens in the prompt (seq_len)</td><td>' + t.seq_len + '</td><td>up to ' + fmtInt(REF.context) + '</td></tr>' +
+        '<tr><td>numbers per token (d_model)</td><td>' + t.d_model + '</td><td>' + fmtInt(REF.d_model) + '</td></tr>' +
+        '<tr><td>attention heads</td><td>' + t.n_heads + '</td><td>' + REF.n_heads + ' (' + REF.n_kv_heads + ' KV)</td></tr>' +
+        '<tr><td>numbers per head (d_head)</td><td>' + t.d_head + '</td><td>' + REF.d_head + '</td></tr>' +
+        '<tr><td>FFN hidden size (d_ff)</td><td>8</td><td>' + fmtInt(REF.d_ff) + '</td></tr>' +
+        '<tr><td>layers (blocks)</td><td>1</td><td>' + REF.n_layers + '</td></tr>' }),
+      h('p', { html: 'Input matrix <b>X</b> ' + typeBadge('matrix') + ' ' + shapeHtml('[5 × 4]') + ': one row of 4 numbers per token of "The cat sat on the".' }),
+      h('table', { class: 'toy-x no-i18n', html: '<tr><th></th><th>d0</th><th>d1</th><th>d2</th><th>d3</th></tr>' + rows }),
+      h('p', {}, h('a', { href: '#', class: 'xlink', 'data-goto': 'big-picture/toy-model' }, 'Open the full explanation →')));
+    document.body.appendChild(pop);
+    dom.toyPop = pop;
+  }
+  Course.openToy = openToy; Course.closeToy = closeToy;
 
   // ------------------------------------------------------------------ offline (service worker, http/https only)
   function setupOffline() {

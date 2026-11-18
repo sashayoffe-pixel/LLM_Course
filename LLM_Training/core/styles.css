@@ -284,3 +284,47 @@ pre.code code { background: none; border: 0; padding: 0; font-size: inherit; whi
   .blk { min-width: 80px; max-width: 100%; }
   .bar-row { grid-template-columns: 70px 1fr auto; }
 }
+
+/* ---------- toy-model popover & language button ---------- */
+.toy-btn, .lang-btn { padding: 4px 10px; white-space: nowrap; }
+.lang-btn { font-weight: 700; }
+.toy-pop { position: fixed; top: 52px; right: 14px; z-index: 60; width: min(440px, calc(100vw - 20px)); max-height: calc(100vh - 70px); overflow-y: auto;
+  background: var(--panel); border: 1px solid var(--accent); border-radius: 12px; padding: 12px 16px; box-shadow: 0 10px 40px rgba(0,0,0,.6); font-size: .88rem; }
+[dir=rtl] .toy-pop { right: auto; left: 14px; }
+.toy-pop h3 { margin: 0 0 6px; }
+.toy-close { position: absolute; top: 8px; right: 10px; background: none; border: 0; color: var(--muted); font-size: 1rem; cursor: pointer; }
+[dir=rtl] .toy-close { right: auto; left: 10px; }
+.toy-dims, .toy-x { border-collapse: collapse; width: 100%; margin: 6px 0 10px; font-size: .82rem; }
+.toy-dims td, .toy-dims th, .toy-x td, .toy-x th { border-bottom: 1px solid var(--border); padding: 3px 6px; text-align: start; }
+.toy-dims td:not(:first-child), .toy-dims th { font-family: var(--mono); }
+.toy-x { direction: ltr; font-family: var(--mono); width: auto; }
+.toy-x td { text-align: right; }
+@media (max-width: 560px) { .toy-btn-label { display: none; } }
+
+/* ---------- Hebrew / right-to-left ---------- */
+[dir=rtl] body { font-family: system-ui, "Segoe UI", Arial, "Noto Sans Hebrew", sans-serif; }
+[dir=rtl] ul, [dir=rtl] ol { padding-left: 0; padding-right: 1.3em; }
+[dir=rtl] .kp ul { padding-right: 1.1em; padding-left: 0; }
+[dir=rtl] .toc { border-right: 0; border-left: 1px solid var(--border); }
+[dir=rtl] .toc-slide.on { box-shadow: inset -2px 0 0 var(--accent); }
+[dir=rtl] .toc-caret { transform: scaleX(-1); }
+[dir=rtl] .toc-sec.open .toc-caret { transform: rotate(90deg); }
+[dir=rtl] .toc-slides { padding: 2px 10px 6px 0; }
+[dir=rtl] .callout { border-left-width: 1px; border-right-width: 4px; }
+[dir=rtl] .callout-info { border-right-color: var(--accent); } [dir=rtl] .callout-tip { border-right-color: var(--good); }
+[dir=rtl] .callout-warn { border-right-color: var(--warn); } [dir=rtl] .callout-key { border-right-color: var(--t-probability); }
+[dir=rtl] .callout-illustrative { border-right-color: var(--dim); } [dir=rtl] .callout-docs { border-right-color: var(--t-matrix); }
+[dir=rtl] .callout-hedge { border-right-color: var(--t-token); }
+[dir=rtl] .tbl th, [dir=rtl] .tbl td { text-align: right; }
+[dir=rtl] .step-count { margin-left: 0; margin-right: 4px; }
+[dir=rtl] .step-dots { margin-left: 0; margin-right: auto; }
+[dir=rtl] .step-n { margin-right: 0; margin-left: 4px; }
+/* things that must stay left-to-right inside Hebrew text */
+[dir=rtl] pre, [dir=rtl] code, [dir=rtl] kbd, [dir=rtl] .tok, [dir=rtl] .tokens, [dir=rtl] .dt, [dir=rtl] .shape, [dir=rtl] .mx-scroll,
+[dir=rtl] .chart, [dir=rtl] svg, [dir=rtl] .formula, [dir=rtl] .ctl-val, [dir=rtl] .bar-val, [dir=rtl] .counter, [dir=rtl] .progress,
+[dir=rtl] input[type=range], [dir=rtl] textarea, [dir=rtl] .big-num { direction: ltr; unicode-bidi: isolate; }
+[dir=rtl] .formula, [dir=rtl] .big-num { display: inline-block; }
+/* diagrams keep their left-to-right data flow; labels inside read right-to-left */
+[dir=rtl] .blocks, [dir=rtl] .step-ctrl { direction: ltr; }
+[dir=rtl] .blk, [dir=rtl] .edge-label, [dir=rtl] .blk-caption { direction: rtl; }
+[dir=rtl] .bar-label { text-align: left; }

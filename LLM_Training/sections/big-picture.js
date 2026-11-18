@@ -261,6 +261,81 @@
           } }
         ]
       },
+      // ------------------------------------------------------------------ the toy model (explained before first use)
+      {
+        id: 'toy-model', title: 'Meet the toy model: a transformer small enough to follow by hand',
+        critical: {
+          understand: ['The <b>toy model</b> has the <b>same architecture</b> as the 8B reference model — tokens → vectors → attention → FFN → logits → next token — but with tiny sizes, so every number fits on screen.',
+            'Every toy calculation in the course uses the <b>same input</b>: the 5 tokens of "The cat sat on the", each represented by <b>4 numbers</b> (the matrix X). Follow those rows from slide to slide.',
+            'The <b>🧸 Toy model</b> button in the top bar reopens this summary on any slide.'],
+          details: ['Toy sizes: seq_len 5, d_model 4, 2 attention heads of d_head 2, FFN hidden size 8, one layer, a handful of candidate next tokens.',
+            'The toy weights are <b>made up</b> (illustrative); the arithmetic done with them is real and computed live in your browser.',
+            'Only the sizes differ from the real model: the shapes are the same pattern, e.g. X is [5 × 4] in the toy and [5 × 4,096] in the 8B model.']
+        },
+        dataTypes: [
+          { name: 'prompt tokens', type: 'token', shape: '[5]', example: 'The, ␣cat, ␣sat, ␣on, ␣the' },
+          { name: 'X (input matrix)', type: 'matrix', shape: '[seq_len × d_model] = [5 × 4]', example: 'row ␣the = [0.30, −0.20, 0.50, 0.10]' },
+          { name: 'toy sizes', type: 'integer', shape: 'scalar', example: 'd_model = 4, d_head = 2' },
+          { name: 'toy weights W', type: 'matrix', shape: '[4 × 4], [4 × 8], [8 × 4]', example: 'illustrative values' },
+          { name: 'toy parameter count', type: 'integer', shape: 'scalar', example: 'computed below' }
+        ],
+        levels: [
+          { name: 'What & why', render: function (el, api) {
+            var t = api.ex.toy;
+            api.html(el, '<p>Real LLMs multiply matrices with <b>thousands</b> of rows and columns — far too many numbers to watch. ' +
+              'So this course also uses a <b>toy model</b>: a miniature transformer built exactly like the real one, but where each token is described by only <b>' + t.d_model + ' numbers</b> instead of ' + api.fmtInt(api.ref.d_model) + '.</p>' +
+              '<p>Whenever you see a hand calculation, it is this toy model. When a slide talks about memory, speed or cost, it uses the <b>8B reference model</b>.</p>');
+            api.blocks(el, { blocks: [
+              { label: '"The cat sat on the"', sub: '5 tokens', type: 'token', shape: '[5]', goto: 'tokenization/text-to-ids' },
+              { label: 'X', sub: '4 numbers per token', type: 'matrix', shape: '[5 × 4]', goto: 'embeddings/input-matrix' },
+              { label: 'Attention', sub: t.n_heads + ' heads × d_head ' + t.d_head, type: 'matrix', shape: '[5 × 4]', goto: 'attention/worked-example' },
+              { label: 'FFN', sub: 'hidden size 8', type: 'matrix', shape: '[5 × 4]', goto: 'ffn-moe/swiglu' },
+              { label: 'Logits → " mat"', sub: 'a few candidate tokens', type: 'probability', shape: '[candidates]', goto: 'output-sampling/unembedding' }
+            ], caption: 'One layer of the toy model. Click a block to see the slide where it is calculated.' });
+            var g = api.grid(el, 240);
+            api.card(g, '✓ Real in the toy model', '<ul><li>The architecture and the order of the steps</li><li>The formulas (dot products, softmax, RMSNorm, SiLU…)</li><li>The shapes pattern: [seq_len × d_model], [d_head], [vocab]</li><li>Every number on screen is computed live from the inputs</li></ul>');
+            api.card(g, '≈ Made up in the toy model', '<ul><li>The weight values (a real model learns them in training)</li><li>The sizes (4 instead of 4,096; 1 layer instead of 32)</li><li>The vocabulary: a handful of candidate words instead of 128,256</li></ul>');
+            api.callout(el, 'Tip: press <b>🧸 Toy model</b> in the top bar at any time to see these sizes and the X matrix again.', 'tip');
+          } },
+          { name: 'Toy vs real', render: function (el, api) {
+            var t = api.ex.toy, r = api.ref, dff = 8;
+            var toyAttn = 4 * t.d_model * t.d_model, toyFfn = 3 * t.d_model * dff, toyNorm = 2 * t.d_model, toyLayer = toyAttn + toyFfn + toyNorm;
+            var pb = r.paramBreakdown();
+            api.html(el, '<p>Same names, same roles — only the sizes change. The ratio column shows how much bigger the real model is.</p>');
+            var row = function (name, what, a, b) { return [name, what, '<b>' + api.fmtInt(a) + '</b>', api.fmtInt(b), '×' + api.fmtInt(Math.round(b / a))]; };
+            api.table(el, { headers: ['Size', 'What it means', 'Toy', '8B reference', 'Ratio'], rows: [
+              row('seq_len', 'tokens in the prompt', t.seq_len, r.context),
+              row('d_model', 'numbers that describe one token', t.d_model, r.d_model),
+              row('n_heads', 'attention heads per layer', t.n_heads, r.n_heads),
+              row('d_head', 'numbers per head', t.d_head, r.d_head),
+              row('d_ff', 'FFN hidden size', dff, r.d_ff),
+              row('n_layers', 'transformer blocks stacked', 1, r.n_layers),
+              row('params / layer', 'weights in one block', toyLayer, pb.perLayer)
+            ] });
+            api.html(el, '<div class="formula">toy layer = attention 4·(' + t.d_model + '×' + t.d_model + ') = ' + toyAttn + ' + FFN 3·(' + t.d_model + '×' + dff + ') = ' + toyFfn + ' + norms 2·' + t.d_model + ' = ' + toyNorm + ' → <b>' + toyLayer + '</b> weights</div>');
+            api.callout(el, 'seq_len for the reference model is its context window (' + api.fmtInt(r.context) + ' tokens); the toy prompt always has ' + t.seq_len + '. The toy uses 2 query heads and 2 key/value heads; the real model shares ' + r.n_kv_heads + ' key/value heads among ' + r.n_heads + ' query heads (' + api.link('attention/gqa-cost', 'GQA') + ').', 'info');
+          } },
+          { name: 'Its numbers', render: function (el, api) {
+            var X = api.ex.toyX;
+            api.html(el, '<p>This is the input the toy model starts from on every slide: matrix <b>X</b> ' + api.badge('matrix', '[5 × 4]') + '. Each <b>row</b> is one token; each of the 4 <b>columns</b> (d0–d3) is one of its numbers.</p>');
+            api.matrix(el, { data: X, rowLabels: api.ex.tokens.map(function (k) { return api.tokText(k.text); }), colLabels: ['d0', 'd1', 'd2', 'd3'],
+              title: 'X', type: 'matrix', shape: '[5 × 4]', highlight: { row: 4 }, caption: 'The highlighted row (␣the) is the position whose output must predict ␣mat.' });
+            api.illustrative(el, 'X stands for "token embedding + position". In a real model these numbers are learned; here they are chosen by hand.');
+            api.html(el, '<h3>Where you will meet the toy model</h3>');
+            api.table(el, { headers: ['Slide', 'What happens to X there'], rows: [
+              [api.link('big-picture/forward-pass', 'One forward pass'), 'the whole pipeline once, end to end'],
+              [api.link('embeddings/input-matrix', 'The input matrix X'), 'how X is built from token IDs and positions'],
+              [api.link('transformer-block/rmsnorm', 'RMSNorm'), 'one row of X is normalised step by step'],
+              [api.link('attention/projections', 'Projections'), 'X × W_q, W_k, W_v → Q, K, V'],
+              [api.link('attention/worked-example', 'Attention, worked'), 'QKᵀ → ÷√d_head → mask → softmax → A·V'],
+              [api.link('ffn-moe/swiglu', 'SwiGLU FFN'), 'one row goes through the feed-forward network'],
+              [api.link('output-sampling/unembedding', 'Unembedding'), 'the final row becomes logits and probabilities'],
+              [api.link('training/backprop', 'Backprop'), 'one gradient-descent update on toy weights'],
+              [api.link('training/lora', 'LoRA'), 'a low-rank update of a 4 × 4 weight matrix']
+            ] });
+          } }
+        ]
+      },
       // ------------------------------------------------------------------ forward pass
       {
         id: 'forward-pass', title: 'One forward pass, with numbers',

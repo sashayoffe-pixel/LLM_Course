@@ -6,7 +6,9 @@ const fs = require('fs'), path = require('path'), crypto = require('crypto');
 const root = path.join(__dirname, '..');
 function list() {
   const out = ['./', 'index.html', 'manifest.webmanifest', 'icon.svg', 'core/engine.js', 'core/styles.css'];
+  out.push('core/i18n.js');
   fs.readdirSync(path.join(root, 'sections')).sort().forEach(f => { if (/\.(js|css)$/.test(f)) out.push('sections/' + f); });
+  fs.readdirSync(path.join(root, 'i18n', 'he')).sort().forEach(f => { if (/\.js$/.test(f)) out.push('i18n/he/' + f); });
   return out;
 }
 function version(files) {
