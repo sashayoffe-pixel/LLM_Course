@@ -280,5 +280,9 @@
  "all outputs computed": "",
  "a stop condition or budget is hit": "",
  "Compare <0>chains vs graphs</0> and the <1>ReAct graph</1>. The KSampler's internal step loop is hidden inside a single node: from the graph's point of view it is still acyclic. In an agent system, the agent loops <2>around</2> ComfyUI: it generates, looks at the result (a vision-capable model can critique it), and tries again.": "",
- "Deepest level reached — next slide → <0>Failure modes and compounding errors (pⁿ)</0>": ""
+ "Deepest level reached — next slide → <0>Failure modes and compounding errors (pⁿ)</0>": "",
+ "schedule": "",
+ "the agent loop": "",
+ "{#}. GET /history/a1b2c3d4-…": "",
+ "LangGraph agent: ‏cycles": ""
 }

@@ -238,5 +238,6 @@
  "<0>Illustrative values.</0> Rule of thumb, not a law.": "",
  "▼ Dive in: <0>Plain loop</0>": "",
  "Compare with the graph: <0/> is the state, the <1/> is the conditional edge, <2/> and <3/> are the nodes. LangGraph adds checkpoints, interrupts and parallelism on top of exactly this loop.": "",
- "Deepest level reached — next slide → <0>ComfyUI: a typed node graph</0>": ""
+ "Deepest level reached — next slide → <0>ComfyUI: a typed node graph</0>": "",
+ "Checkpoints": ""
 }

@@ -239,4 +239,5 @@ Course.i18n.add('he', {
   "▼ Dive in: <0>Plain loop</0>": "▼ צוללים: <0>לולאה רגילה</0>",
   "Compare with the graph: <0/> is the state, the <1/> is the conditional edge, <2/> and <3/> are the nodes. LangGraph adds checkpoints, interrupts and parallelism on top of exactly this loop.": "השוו ל-graph: <0/> הוא ה-state, ה-<1/> הוא ה-conditional edge, <2/> ו-<3/> הם ה-nodes. LangGraph מוסיף checkpoints, interrupts ומקביליות מעל הלולאה הזו בדיוק.",
   "Deepest level reached — next slide → <0>ComfyUI: a typed node graph</0>": "הגענו לרמה העמוקה ביותר — השקף הבא ← <0>ComfyUI: גרף nodes מוטיפס</0>",
+  "Checkpoints": "Checkpoints",
 });
