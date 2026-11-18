@@ -273,7 +273,7 @@
 
     visited[entry.key] = 1; saveVisited();
     var hash = '#/' + entry.key + '/' + level;
-    if (location.hash !== hash) { suppressHash = true; history.replaceState ? history.replaceState(null, '', hash) : (location.hash = hash); suppressHash = false; }
+    if (location.hash !== hash) { suppressHash = true; try { history.replaceState(null, '', hash); } catch (e) { try { location.hash = hash; } catch (e2) { /* sandboxed viewer */ } } suppressHash = false; }
 
     renderHead(entry, level);
     renderBody(entry, level, dir);
