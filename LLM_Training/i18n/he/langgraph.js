@@ -67,7 +67,7 @@ Course.i18n.add('he', {
   "step counter": "מונה צעדים",
   "node update": "update של node",
   "reducer": "reducer",
-  "Use add_messages reducer": "שימוש ב-reducer‏ add_messages",
+  "Use add_messages reducer": "שימוש ב-reducer add_messages",
   "agent → +AI tool call": "agent ← +AI tool call",
   "tools → +{#} results": "tools ← +{#} תוצאות",
   "same id as AI msg → edit": "אותו id כמו הודעת AI ← עריכה",
